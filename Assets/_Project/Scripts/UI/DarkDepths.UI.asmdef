@@ -1,7 +1,12 @@
 {
     "name": "DarkDepths.UI",
     "rootNamespace": "DarkDepths.UI",
-    "references": ["DarkDepths.Core", "DarkDepths.Run", "DarkDepths.Progression"],
+    "references": [
+        "DarkDepths.Core",
+        "DarkDepths.Run",
+        "DarkDepths.Progression",
+        "UnityEngine.UI"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

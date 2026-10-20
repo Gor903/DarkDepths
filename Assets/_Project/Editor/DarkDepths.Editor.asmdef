@@ -7,7 +7,8 @@
         "DarkDepths.Player",
         "Unity.InputSystem",
         "UnityEngine.UI",
-        "DarkDepths.Loot"
+        "DarkDepths.Loot",
+        "DarkDepths.UI"
     ],
     "includePlatforms": [
         "Editor"

@@ -1,3 +1,4 @@
+using DarkDepths.Core;
 using UnityEngine;
 
 namespace DarkDepths.Player
@@ -8,6 +9,8 @@ namespace DarkDepths.Player
         [SerializeField] private PlayerLookConfig _config;
         [SerializeField] private PlayerInputReader _input;
         [SerializeField] private Transform _yawTarget;
+        [Tooltip("Optional: scales the configured sensitivity by the player's own setting.")]
+        [SerializeField] private UserSettings _settings;
 
         private Camera _camera;
         private float _pitch;
@@ -29,6 +32,10 @@ namespace DarkDepths.Player
         {
             Vector2 lookInput = _input.Look;
             float sensitivity = _config.LookSensitivity;
+            if (_settings != null)
+            {
+                sensitivity *= _settings.LookSensitivity;
+            }
 
             _yawTarget.Rotate(0f, lookInput.x * sensitivity, 0f);
 

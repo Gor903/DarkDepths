@@ -141,6 +141,7 @@ MonoBehaviour:
   _config: {fileID: 11400000, guid: 34177be4dfd322c248f2778ce053402f, type: 2}
   _input: {fileID: 2132872019784699300}
   _yawTarget: {fileID: 5331800196849381562}
+  _settings: {fileID: 11400000, guid: 4367490986531cb1fbfb1f8c2a198f09, type: 2}
 --- !u!1 &6286143512067945318
 GameObject:
   m_ObjectHideFlags: 0
@@ -329,6 +330,7 @@ MonoBehaviour:
   _actions: {fileID: -944628639613478452, guid: 249af3fad2140984988687cf957ef336, type: 3}
   _actionMapName: Player
   _touch: {fileID: 0}
+  _inputGate: {fileID: 11400000, guid: ab9b05f0ccfd236aebc3d8ca894f1d80, type: 2}
 --- !u!114 &2242697744404602976
 MonoBehaviour:
   m_ObjectHideFlags: 0

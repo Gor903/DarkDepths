@@ -1,3 +1,4 @@
+using DarkDepths.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +11,8 @@ namespace DarkDepths.Player
         [SerializeField] private string _actionMapName = "Player";
         [Tooltip("Optional on-screen controls; keyboard and touch are merged when both are present.")]
         [SerializeField] private TouchControls _touch;
+        [Tooltip("Optional: while a screen such as settings holds the gate, the player reads no input.")]
+        [SerializeField] private InputGate _inputGate;
 
         private InputActionMap _map;
         private InputAction _move;
@@ -22,10 +25,17 @@ namespace DarkDepths.Player
         private bool _flashlightTogglePending;
         private bool _interactPending;
 
+        private bool Blocked => _inputGate != null && _inputGate.IsBlocked;
+
         public Vector2 Move
         {
             get
             {
+                if (Blocked)
+                {
+                    return Vector2.zero;
+                }
+
                 Vector2 value = _move.ReadValue<Vector2>();
                 if (_touch != null)
                 {
@@ -40,17 +50,18 @@ namespace DarkDepths.Player
         {
             get
             {
-                Vector2 value = _look.ReadValue<Vector2>();
-                if (_touch != null)
+                // The swipe delta is consumed even when blocked, so closing a screen cannot release a stored flick.
+                Vector2 touchDelta = _touch != null ? _touch.ConsumeLookDelta() : Vector2.zero;
+                if (Blocked)
                 {
-                    value += _touch.ConsumeLookDelta();
+                    return Vector2.zero;
                 }
 
-                return value;
+                return _look.ReadValue<Vector2>() + touchDelta;
             }
         }
 
-        public bool SprintHeld => _sprint.IsPressed() || (_touch != null && _touch.SprintHeld);
+        public bool SprintHeld => !Blocked && (_sprint.IsPressed() || (_touch != null && _touch.SprintHeld));
 
         // Returns true once per crouch press so the caller cannot react to the same press twice.
         public bool ConsumeCrouchToggle()
@@ -59,7 +70,7 @@ namespace DarkDepths.Player
             bool fromTouch = _touch != null && _touch.ConsumeCrouchToggle();
             bool fromKeyboard = _crouchTogglePending;
             _crouchTogglePending = false;
-            return fromKeyboard || fromTouch;
+            return !Blocked && (fromKeyboard || fromTouch);
         }
 
         public bool ConsumeFlashlightToggle()
@@ -67,7 +78,7 @@ namespace DarkDepths.Player
             bool fromTouch = _touch != null && _touch.ConsumeFlashlightToggle();
             bool fromKeyboard = _flashlightTogglePending;
             _flashlightTogglePending = false;
-            return fromKeyboard || fromTouch;
+            return !Blocked && (fromKeyboard || fromTouch);
         }
 
         public bool ConsumeInteract()
@@ -75,7 +86,7 @@ namespace DarkDepths.Player
             bool fromTouch = _touch != null && _touch.ConsumeInteract();
             bool fromKeyboard = _interactPending;
             _interactPending = false;
-            return fromKeyboard || fromTouch;
+            return !Blocked && (fromKeyboard || fromTouch);
         }
 
         private void Awake()
