@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DarkDepths.Player
+namespace DarkDepths.Core
 {
     // Keeps a full-screen rect inside the safe area so notches and gesture bars never cover a control.
     [RequireComponent(typeof(RectTransform))]
