@@ -1,10 +1,9 @@
-using System.IO;
+using DarkDepths.Core;
 using DarkDepths.Loot;
 using DarkDepths.World;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace DarkDepths.EditorTools
 {
@@ -12,7 +11,6 @@ namespace DarkDepths.EditorTools
     public static class TestRoomSetup
     {
         private const string SandboxScenePath = "Assets/_Project/Scenes/Sandbox.unity";
-        private const string MaterialFolder = "Assets/_Project/Art/Materials";
         private const string RootName = "TestRoom";
 
         private const float WallHeight = 3f;
@@ -36,8 +34,11 @@ namespace DarkDepths.EditorTools
         {
             LayersSetup.CreateLayers();
 
-            Material structure = LoadOrCreateMaterial("Placeholder_Structure", "#1B2028");
-            Material prop = LoadOrCreateMaterial("Placeholder_Prop", "#3A4656");
+            PaletteConfig palette = PaletteSetup.LoadOrCreateConfig();
+            Material structure = PaletteSetup.MaterialFor(PaletteRole.Structure, palette);
+            Material prop = PaletteSetup.MaterialFor(PaletteRole.Prop, palette);
+            // Loot is what the player has to spot in the dark, so it carries the palette's warm accent.
+            Material loot = PaletteSetup.MaterialFor(PaletteRole.Lamp, palette);
 
             UnityEngine.SceneManagement.Scene scene = EditorSceneManager.OpenScene(SandboxScenePath, OpenSceneMode.Single);
 
@@ -49,9 +50,9 @@ namespace DarkDepths.EditorTools
             BuildRoom(root.transform, structure);
             BuildCorridor(root.transform, structure);
             BuildDoor(root.transform, prop);
-            BuildPickups(root.transform, prop);
+            BuildPickups(root.transform, loot);
 
-            ApplyDarkLighting();
+            PaletteSetup.ApplyRenderSettings(palette);
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
@@ -139,21 +140,6 @@ namespace DarkDepths.EditorTools
             }
         }
 
-        // Stage 1 stopgap so the flashlight has darkness to work against; T2.1 owns real lighting.
-        private static void ApplyDarkLighting()
-        {
-            RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.035f, 0.042f, 0.055f);
-            RenderSettings.fog = false;
-
-            var sun = Object.FindAnyObjectByType<UnityEngine.Light>();
-            if (sun != null && sun.type == LightType.Directional)
-            {
-                sun.intensity = 0.05f;
-                sun.shadows = LightShadows.Soft;
-            }
-        }
-
         private static GameObject Box(string name, Transform parent, Vector3 center, Vector3 size, Material material)
         {
             GameObject box = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -165,27 +151,6 @@ namespace DarkDepths.EditorTools
             box.isStatic = true;
             box.GetComponent<MeshRenderer>().sharedMaterial = material;
             return box;
-        }
-
-        private static Material LoadOrCreateMaterial(string name, string hex)
-        {
-            string path = MaterialFolder + "/" + name + ".mat";
-            var existing = AssetDatabase.LoadAssetAtPath<Material>(path);
-            if (existing != null)
-            {
-                return existing;
-            }
-
-            Directory.CreateDirectory(MaterialFolder);
-            var material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-            if (ColorUtility.TryParseHtmlString(hex, out Color color))
-            {
-                material.color = color;
-            }
-
-            material.SetFloat("_Smoothness", 0.05f);
-            AssetDatabase.CreateAsset(material, path);
-            return material;
         }
 
         private static void Replace(string objectName)
