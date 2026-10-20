@@ -7,16 +7,15 @@ using UnityEngine;
 
 namespace DarkDepths.EditorTools
 {
-    // Primitive room, corridor, door and five pickups for stage 1; real geometry arrives at T2.2.
+    // Assembles the sandbox room, corridor and door out of the modular kit, on the grid rooms will use at T7.
     public static class TestRoomSetup
     {
         private const string SandboxScenePath = "Assets/_Project/Scenes/Sandbox.unity";
         private const string RootName = "TestRoom";
 
-        private const float WallHeight = 3f;
-        private const float WallThickness = 0.2f;
-        private const float DoorWidth = 1.2f;
-        private const float DoorHeight = 2.2f;
+        // The room is three cells square and the corridor three cells long, measured in ModuleConfig cells.
+        private const int RoomCells = 3;
+        private const int CorridorCells = 3;
 
         private static readonly string[] PickupNames = { "Battery", "Medkit", "Bottle", "Baton", "Loot" };
 
@@ -32,11 +31,10 @@ namespace DarkDepths.EditorTools
         [MenuItem("DarkDepths/Setup/Create Test Room")]
         public static void CreateTestRoom()
         {
-            LayersSetup.CreateLayers();
+            ModuleSetup.CreateModules();
 
+            ModuleConfig modules = ModuleSetup.LoadOrCreateConfig();
             PaletteConfig palette = PaletteSetup.LoadOrCreateConfig();
-            Material structure = PaletteSetup.MaterialFor(PaletteRole.Structure, palette);
-            Material prop = PaletteSetup.MaterialFor(PaletteRole.Prop, palette);
             // Loot is what the player has to spot in the dark, so it carries the palette's warm accent.
             Material loot = PaletteSetup.MaterialFor(PaletteRole.Lamp, palette);
 
@@ -47,9 +45,13 @@ namespace DarkDepths.EditorTools
             Replace("Ground");
 
             var root = new GameObject(RootName);
-            BuildRoom(root.transform, structure);
-            BuildCorridor(root.transform, structure);
-            BuildDoor(root.transform, prop);
+            var geometry = new GameObject("Geometry");
+            geometry.transform.SetParent(root.transform, false);
+
+            BuildRoom(geometry.transform, modules);
+            BuildCorridor(geometry.transform, modules);
+            BuildDoor(root.transform, modules);
+            BuildFurniture(root.transform, modules);
             BuildPickups(root.transform, loot);
 
             PaletteSetup.ApplyRenderSettings(palette);
@@ -58,69 +60,72 @@ namespace DarkDepths.EditorTools
             EditorSceneManager.SaveScene(scene);
         }
 
-        private static void BuildRoom(Transform parent, Material material)
+        private static void BuildRoom(Transform parent, ModuleConfig modules)
         {
-            const float half = 3f;
-            float mid = WallHeight * 0.5f;
+            float cell = modules.CellSize;
+            float half = RoomCells * cell * 0.5f;
+            float wallZ = half + modules.WallOffset;
 
-            Box("Room_Floor", parent, new Vector3(0f, -WallThickness * 0.5f, 0f), new Vector3(6f, WallThickness, 6f), material);
-            Box("Room_Ceiling", parent, new Vector3(0f, WallHeight + WallThickness * 0.5f, 0f), new Vector3(6f, WallThickness, 6f), material);
-            Box("Room_Wall_West", parent, new Vector3(-half - WallThickness * 0.5f, mid, 0f), new Vector3(WallThickness, WallHeight, 6.4f), material);
-            Box("Room_Wall_East", parent, new Vector3(half + WallThickness * 0.5f, mid, 0f), new Vector3(WallThickness, WallHeight, 6.4f), material);
-            Box("Room_Wall_South", parent, new Vector3(0f, mid, -half - WallThickness * 0.5f), new Vector3(6f, WallHeight, WallThickness), material);
+            // One pass per column: the room is square, so the same offset walks both wall runs.
+            for (int i = 0; i < RoomCells; i++)
+            {
+                float offset = Offset(i, RoomCells, cell);
 
-            // North wall is split around the doorway.
-            float sideWidth = (6f - DoorWidth) * 0.5f;
-            float sideOffset = DoorWidth * 0.5f + sideWidth * 0.5f;
-            float northZ = half + WallThickness * 0.5f;
-            Box("Room_Wall_North_Left", parent, new Vector3(-sideOffset, mid, northZ), new Vector3(sideWidth, WallHeight, WallThickness), material);
-            Box("Room_Wall_North_Right", parent, new Vector3(sideOffset, mid, northZ), new Vector3(sideWidth, WallHeight, WallThickness), material);
-            Box("Room_Wall_North_Lintel", parent,
-                new Vector3(0f, DoorHeight + (WallHeight - DoorHeight) * 0.5f, northZ),
-                new Vector3(DoorWidth, WallHeight - DoorHeight, WallThickness), material);
+                for (int j = 0; j < RoomCells; j++)
+                {
+                    var tile = new Vector3(offset, 0f, Offset(j, RoomCells, cell));
+                    Place(ModuleSetup.Floor, parent, tile, 0f);
+                    Place(ModuleSetup.Ceiling, parent, tile, 0f);
+                }
+
+                Place(ModuleSetup.Wall, parent, new Vector3(offset, 0f, -wallZ), 0f);
+                // The middle segment of the north wall is where the corridor leaves the room.
+                string north = i == RoomCells / 2 ? ModuleSetup.WallDoorway : ModuleSetup.Wall;
+                Place(north, parent, new Vector3(offset, 0f, wallZ), 0f);
+
+                Place(ModuleSetup.Wall, parent, new Vector3(-wallZ, 0f, offset), 90f);
+                Place(ModuleSetup.Wall, parent, new Vector3(wallZ, 0f, offset), 90f);
+            }
         }
 
-        private static void BuildCorridor(Transform parent, Material material)
+        private static void BuildCorridor(Transform parent, ModuleConfig modules)
         {
-            const float startZ = 3.2f;
-            const float endZ = 9f;
-            float centerZ = (startZ + endZ) * 0.5f;
-            float length = endZ - startZ;
-            float mid = WallHeight * 0.5f;
+            float cell = modules.CellSize;
+            float start = RoomCells * cell * 0.5f;
+            float wallX = cell * 0.5f + modules.WallOffset;
 
-            // Floor and ceiling reach back under the doorway; the gap there was a slot straight out of the level.
-            const float deckStartZ = 2.9f;
-            float deckCenterZ = (deckStartZ + endZ) * 0.5f;
-            float deckLength = endZ - deckStartZ;
+            for (int i = 0; i < CorridorCells; i++)
+            {
+                float z = start + cell * (i + 0.5f);
 
-            Box("Corridor_Floor", parent, new Vector3(0f, -WallThickness * 0.5f, deckCenterZ), new Vector3(2f, WallThickness, deckLength), material);
-            Box("Corridor_Ceiling", parent, new Vector3(0f, WallHeight + WallThickness * 0.5f, deckCenterZ), new Vector3(2f, WallThickness, deckLength), material);
-            Box("Corridor_Wall_West", parent, new Vector3(-1f - WallThickness * 0.5f, mid, centerZ), new Vector3(WallThickness, WallHeight, length), material);
-            Box("Corridor_Wall_East", parent, new Vector3(1f + WallThickness * 0.5f, mid, centerZ), new Vector3(WallThickness, WallHeight, length), material);
-            Box("Corridor_Wall_End", parent, new Vector3(0f, mid, endZ + WallThickness * 0.5f), new Vector3(2.4f, WallHeight, WallThickness), material);
+                Place(ModuleSetup.Floor, parent, new Vector3(0f, 0f, z), 0f);
+                Place(ModuleSetup.Ceiling, parent, new Vector3(0f, 0f, z), 0f);
+                Place(ModuleSetup.Wall, parent, new Vector3(-wallX, 0f, z), 90f);
+                Place(ModuleSetup.Wall, parent, new Vector3(wallX, 0f, z), 90f);
+            }
+
+            float end = start + cell * CorridorCells + modules.WallOffset;
+            Place(ModuleSetup.Wall, parent, new Vector3(0f, 0f, end), 0f);
         }
 
-        private static void BuildDoor(Transform parent, Material material)
+        private static void BuildDoor(Transform parent, ModuleConfig modules)
         {
-            var door = new GameObject("Door");
-            door.transform.SetParent(parent, false);
+            float wallZ = RoomCells * modules.CellSize * 0.5f + modules.WallOffset;
+            Place(ModuleSetup.Door, parent, new Vector3(0f, 0f, wallZ), 0f);
+        }
 
-            var pivot = new GameObject("DoorPivot");
-            pivot.transform.SetParent(door.transform, false);
-            pivot.transform.localPosition = new Vector3(-DoorWidth * 0.5f, 0f, 3.1f);
+        private static void BuildFurniture(Transform parent, ModuleConfig modules)
+        {
+            var group = new GameObject("Furniture");
+            group.transform.SetParent(parent, false);
 
-            GameObject leaf = Box("DoorLeaf", pivot.transform,
-                new Vector3(DoorWidth * 0.5f, DoorHeight * 0.5f, 0f),
-                new Vector3(DoorWidth, DoorHeight, 0.08f), material);
-            leaf.layer = LayerMask.NameToLayer("Interactable");
-            leaf.isStatic = false;
+            float half = RoomCells * modules.CellSize * 0.5f;
 
-            var component = door.AddComponent<Door>();
-            Wire(component, "_pivot", pivot.transform);
-            Wire(component, "_leaf", leaf.GetComponent<BoxCollider>());
-            // The leaf stops rather than sweeping through a body; walls are excluded or it would never leave the frame.
-            WireInt(component, "_blockerMask",
-                (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Enemy")));
+            // Against the west wall, turned to face the room: furniture is cover and a sightline breaker.
+            Place(ModuleSetup.Shelf, group.transform,
+                new Vector3(-half + modules.ShelfDepth * 0.5f, 0f, 0f), 90f);
+            Place(ModuleSetup.Table, group.transform, new Vector3(1.4f, 0f, 0f), 0f);
+            Place(ModuleSetup.Crate, group.transform, new Vector3(-1.2f, 0f, -2.2f), 25f);
         }
 
         private static void BuildPickups(Transform parent, Material material)
@@ -131,24 +136,39 @@ namespace DarkDepths.EditorTools
             int interactable = LayerMask.NameToLayer("Interactable");
             for (int i = 0; i < PickupNames.Length; i++)
             {
-                GameObject box = Box(PickupNames[i], group.transform, PickupPositions[i], new Vector3(0.3f, 0.3f, 0.3f), material);
+                GameObject box = Box(PickupNames[i], group.transform, PickupPositions[i], material);
                 box.layer = interactable;
                 box.isStatic = false;
 
                 var pickup = box.AddComponent<Pickup>();
-                WireString(pickup, "_displayName", PickupNames[i]);
+                SerializedWiring.WireString(pickup, "_displayName", PickupNames[i]);
             }
         }
 
-        private static GameObject Box(string name, Transform parent, Vector3 center, Vector3 size, Material material)
+        // Cell index to a position along a row centred on the origin.
+        private static float Offset(int index, int count, float cell)
+        {
+            return (index - (count - 1) * 0.5f) * cell;
+        }
+
+        private static GameObject Place(string moduleName, Transform parent, Vector3 position, float yaw)
+        {
+            GameObject prefab = ModuleSetup.Load(moduleName);
+            var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent);
+            instance.transform.localPosition = position;
+            instance.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+            // Without the hint the inspector shows a rotated module as 0 degrees and fights whoever edits it.
+            TransformUtils.SetInspectorRotation(instance.transform, new Vector3(0f, yaw, 0f));
+            return instance;
+        }
+
+        private static GameObject Box(string name, Transform parent, Vector3 center, Material material)
         {
             GameObject box = GameObject.CreatePrimitive(PrimitiveType.Cube);
             box.name = name;
             box.transform.SetParent(parent, false);
             box.transform.localPosition = center;
-            box.transform.localScale = size;
-            box.layer = LayerMask.NameToLayer("Wall");
-            box.isStatic = true;
+            box.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
             box.GetComponent<MeshRenderer>().sharedMaterial = material;
             return box;
         }
@@ -160,27 +180,6 @@ namespace DarkDepths.EditorTools
             {
                 Object.DestroyImmediate(existing);
             }
-        }
-
-        private static void Wire(Object target, string fieldName, Object value)
-        {
-            var serialized = new SerializedObject(target);
-            serialized.FindProperty(fieldName).objectReferenceValue = value;
-            serialized.ApplyModifiedPropertiesWithoutUndo();
-        }
-
-        private static void WireInt(Object target, string fieldName, int value)
-        {
-            var serialized = new SerializedObject(target);
-            serialized.FindProperty(fieldName).intValue = value;
-            serialized.ApplyModifiedPropertiesWithoutUndo();
-        }
-
-        private static void WireString(Object target, string fieldName, string value)
-        {
-            var serialized = new SerializedObject(target);
-            serialized.FindProperty(fieldName).stringValue = value;
-            serialized.ApplyModifiedPropertiesWithoutUndo();
         }
     }
 }
