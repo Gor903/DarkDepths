@@ -1,0 +1,14 @@
+{
+    "name": "DarkDepths.UI",
+    "rootNamespace": "DarkDepths.UI",
+    "references": ["DarkDepths.Core", "DarkDepths.Run", "DarkDepths.Progression"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,14 @@
+{
+    "name": "DarkDepths.Save",
+    "rootNamespace": "DarkDepths.Save",
+    "references": ["DarkDepths.Core"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

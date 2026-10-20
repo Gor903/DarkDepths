@@ -1,0 +1,14 @@
+{
+    "name": "DarkDepths.Progression",
+    "rootNamespace": "DarkDepths.Progression",
+    "references": ["DarkDepths.Core", "DarkDepths.Save", "DarkDepths.Loot"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

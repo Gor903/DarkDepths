@@ -1,0 +1,14 @@
+{
+    "name": "DarkDepths.Noise",
+    "rootNamespace": "DarkDepths.Noise",
+    "references": ["DarkDepths.Core"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

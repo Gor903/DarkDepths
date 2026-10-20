@@ -1,0 +1,14 @@
+{
+    "name": "DarkDepths.Run",
+    "rootNamespace": "DarkDepths.Run",
+    "references": ["DarkDepths.Core", "DarkDepths.World", "DarkDepths.Player", "DarkDepths.Enemies", "DarkDepths.Loot", "DarkDepths.Progression", "DarkDepths.Save"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

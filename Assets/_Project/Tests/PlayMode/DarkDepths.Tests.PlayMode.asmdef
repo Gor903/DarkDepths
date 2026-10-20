@@ -1,0 +1,27 @@
+{
+    "name": "DarkDepths.Tests.PlayMode",
+    "rootNamespace": "DarkDepths.Tests.PlayMode",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "DarkDepths.Core",
+        "DarkDepths.Noise",
+        "DarkDepths.World",
+        "DarkDepths.Player",
+        "DarkDepths.Enemies",
+        "DarkDepths.Run"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

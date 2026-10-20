@@ -1,0 +1,32 @@
+{
+    "name": "DarkDepths.Tests.EditMode",
+    "rootNamespace": "DarkDepths.Tests.EditMode",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "DarkDepths.Core",
+        "DarkDepths.Noise",
+        "DarkDepths.World",
+        "DarkDepths.Player",
+        "DarkDepths.Enemies",
+        "DarkDepths.Save",
+        "DarkDepths.Run",
+        "DarkDepths.Loot",
+        "DarkDepths.Progression"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

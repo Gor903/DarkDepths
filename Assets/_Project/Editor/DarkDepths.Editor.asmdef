@@ -1,0 +1,23 @@
+{
+    "name": "DarkDepths.Editor",
+    "rootNamespace": "DarkDepths.EditorTools",
+    "references": [
+        "DarkDepths.Core",
+        "DarkDepths.World",
+        "DarkDepths.Player",
+        "Unity.InputSystem",
+        "UnityEngine.UI",
+        "DarkDepths.Loot"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
