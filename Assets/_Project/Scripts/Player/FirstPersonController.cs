@@ -5,6 +5,8 @@ namespace DarkDepths.Player
     [RequireComponent(typeof(CharacterController))]
     public sealed class FirstPersonController : MonoBehaviour
     {
+        private const float EyeSnapDistance = 0.001f;
+
         [SerializeField] private PlayerMovementConfig _config;
         [SerializeField] private PlayerInputReader _input;
         [SerializeField] private Transform _cameraPivot;
@@ -12,8 +14,10 @@ namespace DarkDepths.Player
         private CharacterController _controller;
         private Stamina _stamina;
         private bool _isCrouching;
+        private Vector3 _horizontalVelocity;
         private float _verticalVelocity;
         private float _targetEyeHeight;
+        private float _eyeVelocity;
 
         public bool IsCrouching => _isCrouching;
         public bool IsSprinting { get; private set; }
@@ -68,6 +72,15 @@ namespace DarkDepths.Player
                 direction.Normalize();
             }
 
+            // Ramping to the target instead of snapping is what stops starts and stops feeling like a switch.
+            Vector3 target = direction * speed;
+            float rate = target.sqrMagnitude > _horizontalVelocity.sqrMagnitude
+                ? _config.Acceleration
+                : _config.Deceleration;
+            _horizontalVelocity = rate > 0f
+                ? Vector3.MoveTowards(_horizontalVelocity, target, rate * deltaTime)
+                : target;
+
             if (_controller.isGrounded && _verticalVelocity < 0f)
             {
                 _verticalVelocity = _config.GroundedStick;
@@ -77,7 +90,7 @@ namespace DarkDepths.Player
                 _verticalVelocity += _config.Gravity * deltaTime;
             }
 
-            Vector3 velocity = direction * speed;
+            Vector3 velocity = _horizontalVelocity;
             velocity.y = _verticalVelocity;
             _controller.Move(velocity * deltaTime);
         }
@@ -91,7 +104,22 @@ namespace DarkDepths.Player
         private void UpdateEyeHeight(float deltaTime)
         {
             Vector3 local = _cameraPivot.localPosition;
-            local.y = Mathf.MoveTowards(local.y, _targetEyeHeight, _config.CrouchTransitionSpeed * deltaTime);
+            if (Mathf.Approximately(local.y, _targetEyeHeight))
+            {
+                return;
+            }
+
+            float next = Mathf.SmoothDamp(local.y, _targetEyeHeight, ref _eyeVelocity,
+                _config.CrouchTransitionTime, Mathf.Infinity, deltaTime);
+
+            // SmoothDamp only approaches its target, so the last millimetre is snapped and the writes stop.
+            if (Mathf.Abs(_targetEyeHeight - next) < EyeSnapDistance)
+            {
+                next = _targetEyeHeight;
+                _eyeVelocity = 0f;
+            }
+
+            local.y = next;
             _cameraPivot.localPosition = local;
         }
 

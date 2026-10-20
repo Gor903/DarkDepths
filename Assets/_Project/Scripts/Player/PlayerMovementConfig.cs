@@ -16,7 +16,13 @@ namespace DarkDepths.Player
         [SerializeField] private float _standingEyeHeight = 1.65f;
         [SerializeField] private float _crouchEyeHeight = 1.0f;
         [SerializeField] private float _radius = 0.3f;
-        [SerializeField] private float _crouchTransitionSpeed = 6f;
+
+        [Header("Feel")]
+        [Tooltip("How fast the body reaches its target speed, m/s^2; 0 snaps straight to it.")]
+        [SerializeField] private float _acceleration = 24f;
+        [SerializeField] private float _deceleration = 30f;
+        [Tooltip("Seconds for the eye to settle at the crouched or standing height.")]
+        [SerializeField] private float _crouchTransitionTime = 0.16f;
 
         [Header("Stamina (s)")]
         [SerializeField] private float _sprintDuration = 5f;
@@ -38,7 +44,9 @@ namespace DarkDepths.Player
         public float StandingEyeHeight => _standingEyeHeight;
         public float CrouchEyeHeight => _crouchEyeHeight;
         public float Radius => _radius;
-        public float CrouchTransitionSpeed => _crouchTransitionSpeed;
+        public float Acceleration => _acceleration;
+        public float Deceleration => _deceleration;
+        public float CrouchTransitionTime => _crouchTransitionTime;
 
         public float SprintDuration => _sprintDuration;
         public float SprintRecovery => _sprintRecovery;

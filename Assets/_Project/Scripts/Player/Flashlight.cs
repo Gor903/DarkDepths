@@ -9,6 +9,7 @@ namespace DarkDepths.Player
         [SerializeField] private PlayerInputReader _input;
 
         private Light _light;
+        private Transform _mount;
         private Battery _battery;
         private bool _isOn;
         private float _flickerPhase;
@@ -30,16 +31,22 @@ namespace DarkDepths.Player
             }
 
             _light.type = LightType.Spot;
+            _light.color = _config.Color;
             _light.range = _config.Range;
             _light.spotAngle = _config.SpotAngle;
             _light.innerSpotAngle = _config.InnerSpotAngle;
             _light.intensity = _config.Intensity;
+
+            // Without shadows the cone lights whatever is behind the walls too, and reads as haze, not a torch.
             _light.shadows = LightShadows.Soft;
+            _light.shadowStrength = _config.ShadowStrength;
+            _light.shadowNearPlane = _config.ShadowNearPlane;
         }
 
         private void Awake()
         {
             _light = GetComponent<Light>();
+            _mount = transform.parent;
             _battery = new Battery(_config.BatteryCapacity, _config.DrainPerSecond);
             ApplyBeamSettings();
             SetOn(false);
@@ -65,6 +72,20 @@ namespace DarkDepths.Player
             }
 
             _light.intensity = CurrentIntensity(Time.deltaTime);
+        }
+
+        // The beam trails the view by a few hundredths of a second, which is what sells a hand-held torch.
+        private void LateUpdate()
+        {
+            if (_mount == null || _config.SwayTime <= 0f)
+            {
+                return;
+            }
+
+            Quaternion view = _mount.rotation;
+            Quaternion trailing = Quaternion.Slerp(transform.rotation, view,
+                1f - Mathf.Exp(-Time.deltaTime / _config.SwayTime));
+            transform.rotation = Quaternion.RotateTowards(view, trailing, _config.MaxSwayAngle);
         }
 
         private float CurrentIntensity(float deltaTime)

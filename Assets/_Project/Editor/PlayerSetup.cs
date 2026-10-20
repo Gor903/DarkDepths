@@ -68,6 +68,11 @@ namespace DarkDepths.EditorTools
             cameraGo.tag = "MainCamera";
             cameraGo.transform.SetParent(pivot.transform, false);
 
+            // Same values PlayerLook applies at runtime, so the Scene view clips exactly like the build does.
+            var cameraComponent = cameraGo.GetComponent<Camera>();
+            cameraComponent.fieldOfView = look.FieldOfView;
+            cameraComponent.nearClipPlane = look.NearClipPlane;
+
             // Mounted on the camera so the beam always follows where the player is looking.
             var flashlightGo = new GameObject("Flashlight", typeof(Light));
             flashlightGo.transform.SetParent(cameraGo.transform, false);
@@ -83,7 +88,7 @@ namespace DarkDepths.EditorTools
             Wire(reader, "_actions", actions);
 
             Wire(interactor, "_input", reader);
-            Wire(interactor, "_camera", cameraGo.GetComponent<Camera>());
+            Wire(interactor, "_camera", cameraComponent);
             // Walls are in the mask so they block the ray; a wall hit simply resolves to no interactable.
             WireInt(interactor, "_interactableMask",
                 (1 << LayerMask.NameToLayer("Interactable")) | (1 << LayerMask.NameToLayer("Wall")));
@@ -100,6 +105,7 @@ namespace DarkDepths.EditorTools
             Wire(lookComponent, "_config", look);
             Wire(lookComponent, "_input", reader);
             Wire(lookComponent, "_yawTarget", root.transform);
+            Wire(lookComponent, "_controller", fpc);
 
             GameObject saved = PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
             Object.DestroyImmediate(root);

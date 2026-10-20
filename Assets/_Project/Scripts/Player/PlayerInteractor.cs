@@ -11,6 +11,8 @@ namespace DarkDepths.Player
         [SerializeField] private Camera _camera;
         [SerializeField] private Text _promptLabel;
         [SerializeField] private float _range = 2f;
+        [Tooltip("Fallback sphere around the ray; a thumb-steered crosshair rarely lands dead centre.")]
+        [SerializeField] private float _aimRadius = 0.12f;
         [SerializeField] private LayerMask _interactableMask;
 
         private readonly RaycastHit[] _hits = new RaycastHit[4];
@@ -25,7 +27,9 @@ namespace DarkDepths.Player
 
             ShowPrompt(available ? target.Prompt : string.Empty);
 
-            if (available && _input.ConsumeInteract())
+            // Always consumed: a press made while aiming at nothing must not fire at the next thing in view.
+            bool pressed = _input.ConsumeInteract();
+            if (available && pressed)
             {
                 target.Interact(gameObject);
                 // The object may have just disabled itself, so drop the cached lookup.
@@ -37,7 +41,22 @@ namespace DarkDepths.Player
         private IInteractable FindTarget()
         {
             Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+
             int count = Physics.RaycastNonAlloc(ray, _hits, _range, _interactableMask, QueryTriggerInteraction.Ignore);
+            IInteractable precise = Resolve(Nearest(count));
+            if (precise != null)
+            {
+                return precise;
+            }
+
+            // The sweep also reports a collider the camera is standing inside, which a thin ray never does.
+            count = Physics.SphereCastNonAlloc(ray, _aimRadius, _hits, _range, _interactableMask,
+                QueryTriggerInteraction.Ignore);
+            return Resolve(Nearest(count));
+        }
+
+        private Collider Nearest(int count)
+        {
             if (count == 0)
             {
                 return null;
@@ -52,12 +71,19 @@ namespace DarkDepths.Player
                 }
             }
 
-            return Resolve(_hits[nearest].collider);
+            return _hits[nearest].collider;
         }
 
         // GetComponentInParent runs only when the aimed-at collider changes, not every frame.
         private IInteractable Resolve(Collider hitCollider)
         {
+            if (hitCollider == null)
+            {
+                _resolvedCollider = null;
+                _resolvedInteractable = null;
+                return null;
+            }
+
             if (ReferenceEquals(hitCollider, _resolvedCollider))
             {
                 return _resolvedInteractable;

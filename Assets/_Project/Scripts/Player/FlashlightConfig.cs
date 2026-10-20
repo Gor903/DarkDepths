@@ -11,6 +11,19 @@ namespace DarkDepths.Player
         [SerializeField] private float _spotAngle = 55f;
         [Tooltip("Inner cone; the gap to spot angle is what makes the edge soft but still readable.")]
         [SerializeField] private float _innerSpotAngle = 32f;
+        [Tooltip("Warm pale yellow from the palette; pure white reads as a flat wash on grey walls.")]
+        [SerializeField] private Color _color = new Color(0.909f, 0.851f, 0.627f, 1f);
+
+        [Header("Shadows")]
+        [SerializeField, Range(0f, 1f)] private float _shadowStrength = 1f;
+        [Tooltip("Where the beam starts casting; the default 0.2 m skips geometry right in front of the player.")]
+        [SerializeField] private float _shadowNearPlane = 0.08f;
+
+        [Header("Sway")]
+        [Tooltip("Seconds the beam trails the view; 0 locks it rigidly to the camera.")]
+        [SerializeField] private float _swayTime = 0.07f;
+        [Tooltip("Hard cap on the trailing angle, so the beam never points where the player is not looking.")]
+        [SerializeField] private float _maxSwayAngle = 6f;
 
         [Header("Battery")]
         [SerializeField] private float _batteryCapacity = 120f;
@@ -28,6 +41,13 @@ namespace DarkDepths.Player
         public float Range => _range;
         public float SpotAngle => _spotAngle;
         public float InnerSpotAngle => _innerSpotAngle;
+        public Color Color => _color;
+
+        public float ShadowStrength => _shadowStrength;
+        public float ShadowNearPlane => _shadowNearPlane;
+
+        public float SwayTime => _swayTime;
+        public float MaxSwayAngle => _maxSwayAngle;
 
         public float BatteryCapacity => _batteryCapacity;
         public float DrainPerSecond => _drainPerSecond;

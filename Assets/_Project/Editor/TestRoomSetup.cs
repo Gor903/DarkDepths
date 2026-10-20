@@ -87,8 +87,13 @@ namespace DarkDepths.EditorTools
             float length = endZ - startZ;
             float mid = WallHeight * 0.5f;
 
-            Box("Corridor_Floor", parent, new Vector3(0f, -WallThickness * 0.5f, centerZ), new Vector3(2f, WallThickness, length), material);
-            Box("Corridor_Ceiling", parent, new Vector3(0f, WallHeight + WallThickness * 0.5f, centerZ), new Vector3(2f, WallThickness, length), material);
+            // Floor and ceiling reach back under the doorway; the gap there was a slot straight out of the level.
+            const float deckStartZ = 2.9f;
+            float deckCenterZ = (deckStartZ + endZ) * 0.5f;
+            float deckLength = endZ - deckStartZ;
+
+            Box("Corridor_Floor", parent, new Vector3(0f, -WallThickness * 0.5f, deckCenterZ), new Vector3(2f, WallThickness, deckLength), material);
+            Box("Corridor_Ceiling", parent, new Vector3(0f, WallHeight + WallThickness * 0.5f, deckCenterZ), new Vector3(2f, WallThickness, deckLength), material);
             Box("Corridor_Wall_West", parent, new Vector3(-1f - WallThickness * 0.5f, mid, centerZ), new Vector3(WallThickness, WallHeight, length), material);
             Box("Corridor_Wall_East", parent, new Vector3(1f + WallThickness * 0.5f, mid, centerZ), new Vector3(WallThickness, WallHeight, length), material);
             Box("Corridor_Wall_End", parent, new Vector3(0f, mid, endZ + WallThickness * 0.5f), new Vector3(2.4f, WallHeight, WallThickness), material);
@@ -111,6 +116,10 @@ namespace DarkDepths.EditorTools
 
             var component = door.AddComponent<Door>();
             Wire(component, "_pivot", pivot.transform);
+            Wire(component, "_leaf", leaf.GetComponent<BoxCollider>());
+            // The leaf stops rather than sweeping through a body; walls are excluded or it would never leave the frame.
+            WireInt(component, "_blockerMask",
+                (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Enemy")));
         }
 
         private static void BuildPickups(Transform parent, Material material)
@@ -192,6 +201,13 @@ namespace DarkDepths.EditorTools
         {
             var serialized = new SerializedObject(target);
             serialized.FindProperty(fieldName).objectReferenceValue = value;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void WireInt(Object target, string fieldName, int value)
+        {
+            var serialized = new SerializedObject(target);
+            serialized.FindProperty(fieldName).intValue = value;
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
