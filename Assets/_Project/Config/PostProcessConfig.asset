@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 717acfae6ab1db9028cbb7092cd7150b, type: 3}
+  m_Name: PostProcessConfig
+  m_EditorClassIdentifier: DarkDepths.Core::DarkDepths.Core.PostProcessConfig
+  _vignetteIntensity: 0.28
+  _vignetteSmoothness: 0.4
+  _grainIntensity: 0.18
+  _grainResponse: 0.8
+  _bloomThreshold: 1.1
+  _bloomIntensity: 0.6
+  _bloomScatter: 0.6
+  _reducedScale: 0

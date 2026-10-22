@@ -26,6 +26,7 @@ namespace DarkDepths.EditorTools
         private const float HandleSize = 64f;
         private const float ButtonWidth = 240f;
         private const float ButtonHeight = 88f;
+        private const float CheckInset = 12f;
 
         private static readonly Color TextColor = new Color(0.91f, 0.85f, 0.63f);
         private static readonly Color PanelColor = new Color(0.06f, 0.06f, 0.07f, 0.94f);
@@ -99,7 +100,7 @@ namespace DarkDepths.EditorTools
             RectTransform window = CreateStretched("Window", rootRect, Vector2.zero, Vector2.one);
             AddImage(window, BackdropColor);
 
-            RectTransform panel = CreateCentered("Panel", window, new Vector2(940f, 560f));
+            RectTransform panel = CreateCentered("Panel", window, new Vector2(940f, 680f));
             AddImage(panel, PanelColor);
 
             CreateLabel(panel, "Title", "Settings", 44, TextAnchor.UpperCenter,
@@ -107,6 +108,7 @@ namespace DarkDepths.EditorTools
 
             Slider lookSlider = CreateRow(panel, 0, "Look sensitivity", out Text lookValue);
             Slider brightnessSlider = CreateRow(panel, 1, "Brightness", out Text brightnessValue);
+            Toggle reduceEffectsToggle = CreateToggleRow(panel, 2, "Reduce effects");
 
             RectTransform resetRect = CreateCorner("ResetButton", panel, new Vector2(0f, 0f));
             resetRect.anchoredPosition = new Vector2(40f, 40f);
@@ -125,6 +127,7 @@ namespace DarkDepths.EditorTools
             Wire(settingsPanel, "_resetButton", resetButton);
             Wire(settingsPanel, "_lookSensitivitySlider", lookSlider);
             Wire(settingsPanel, "_brightnessSlider", brightnessSlider);
+            Wire(settingsPanel, "_reduceEffectsToggle", reduceEffectsToggle);
             Wire(settingsPanel, "_lookSensitivityValue", lookValue);
             Wire(settingsPanel, "_brightnessValue", brightnessValue);
 
@@ -177,6 +180,21 @@ namespace DarkDepths.EditorTools
 
         private static Slider CreateRow(RectTransform panel, int index, string label, out Text value)
         {
+            RectTransform row = CreateRowRect(panel, index, label);
+
+            value = CreateLabel(row, "Value", "100%", 34, TextAnchor.MiddleRight,
+                new Vector2(0.86f, 0f), Vector2.one, Vector2.zero, Vector2.zero);
+
+            return CreateSlider(row);
+        }
+
+        private static Toggle CreateToggleRow(RectTransform panel, int index, string label)
+        {
+            return CreateToggle(CreateRowRect(panel, index, label));
+        }
+
+        private static RectTransform CreateRowRect(RectTransform panel, int index, string label)
+        {
             float top = -150f - index * RowHeight;
 
             RectTransform row = CreateRect("Row_" + label.Replace(" ", string.Empty), panel);
@@ -191,10 +209,7 @@ namespace DarkDepths.EditorTools
             CreateLabel(row, "Label", label, 34, TextAnchor.MiddleLeft,
                 Vector2.zero, new Vector2(0.4f, 1f), Vector2.zero, Vector2.zero);
 
-            value = CreateLabel(row, "Value", "100%", 34, TextAnchor.MiddleRight,
-                new Vector2(0.86f, 0f), Vector2.one, Vector2.zero, Vector2.zero);
-
-            return CreateSlider(row);
+            return row;
         }
 
         private static Slider CreateSlider(RectTransform row)
@@ -231,6 +246,30 @@ namespace DarkDepths.EditorTools
             // Anchors on fill and handle are driven by the slider itself, so only the images are set here.
             fillImage.raycastTarget = false;
             return slider;
+        }
+
+        // A box with a filled centre: the same reach as a slider handle, and readable without a glyph font.
+        private static Toggle CreateToggle(RectTransform row)
+        {
+            RectTransform rect = CreateRect("Toggle", row);
+            rect.anchorMin = new Vector2(0.42f, 0.5f);
+            rect.anchorMax = new Vector2(0.42f, 0.5f);
+            rect.pivot = new Vector2(0f, 0.5f);
+            rect.sizeDelta = new Vector2(HandleSize, HandleSize);
+
+            Image background = AddImage(rect, TrackColor);
+
+            RectTransform checkRect = CreateStretched("Checkmark", rect, Vector2.zero, Vector2.one);
+            checkRect.offsetMin = new Vector2(CheckInset, CheckInset);
+            checkRect.offsetMax = new Vector2(-CheckInset, -CheckInset);
+            Image check = AddImage(checkRect, new Color(TextColor.r, TextColor.g, TextColor.b, 0.95f));
+            check.raycastTarget = false;
+
+            var toggle = rect.gameObject.AddComponent<Toggle>();
+            toggle.targetGraphic = background;
+            toggle.graphic = check;
+            toggle.transition = Selectable.Transition.ColorTint;
+            return toggle;
         }
 
         private static Button AddButton(RectTransform rect, string label)

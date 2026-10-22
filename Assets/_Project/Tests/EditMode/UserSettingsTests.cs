@@ -34,6 +34,21 @@ namespace DarkDepths.Tests.EditMode
         }
 
         [Test]
+        public void EffectsAreFullUntilTheyAreTurnedDown()
+        {
+            Assert.IsFalse(_settings.ReduceEffects);
+
+            int changes = 0;
+            _settings.Changed += () => changes++;
+
+            _settings.ReduceEffects = true;
+            _settings.ReduceEffects = true;
+
+            Assert.IsTrue(_settings.ReduceEffects);
+            Assert.AreEqual(1, changes);
+        }
+
+        [Test]
         public void ClampsToRange()
         {
             _settings.LookSensitivity = 999f;
@@ -60,11 +75,13 @@ namespace DarkDepths.Tests.EditMode
         {
             _settings.LookSensitivity = 2f;
             _settings.Brightness = 1.4f;
+            _settings.ReduceEffects = true;
 
             _settings.ResetToDefaults();
 
             Assert.AreEqual(1f, _settings.LookSensitivity, Tolerance);
             Assert.AreEqual(1f, _settings.Brightness, Tolerance);
+            Assert.IsFalse(_settings.ReduceEffects);
         }
 
         [Test]
@@ -72,6 +89,7 @@ namespace DarkDepths.Tests.EditMode
         {
             _settings.LookSensitivity = 1.7f;
             _settings.Brightness = 0.8f;
+            _settings.ReduceEffects = true;
             _settings.Save();
 
             var reloaded = ScriptableObject.CreateInstance<UserSettings>();
@@ -79,6 +97,7 @@ namespace DarkDepths.Tests.EditMode
             {
                 Assert.AreEqual(1.7f, reloaded.LookSensitivity, Tolerance);
                 Assert.AreEqual(0.8f, reloaded.Brightness, Tolerance);
+                Assert.IsTrue(reloaded.ReduceEffects);
             }
             finally
             {

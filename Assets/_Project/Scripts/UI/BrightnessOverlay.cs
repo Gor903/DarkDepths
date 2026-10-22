@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace DarkDepths.UI
 {
-    // Lifts or crushes the frame with one transparent quad; stage 1 has no post-processing stack to drive.
+    // Lifts or crushes the frame with one transparent quad; colour grading is not on the list docs/02 allows.
     public sealed class BrightnessOverlay : MonoBehaviour
     {
         [SerializeField] private UserSettings _settings;

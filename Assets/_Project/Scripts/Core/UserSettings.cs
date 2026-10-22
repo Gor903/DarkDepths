@@ -9,6 +9,7 @@ namespace DarkDepths.Core
     {
         private const string LookSensitivityKey = "settings.lookSensitivity";
         private const string BrightnessKey = "settings.brightness";
+        private const string ReduceEffectsKey = "settings.reduceEffects";
 
         [Header("Look sensitivity, as a multiplier over PlayerLookConfig")]
         [SerializeField] private float _lookSensitivityMin = 0.4f;
@@ -20,8 +21,13 @@ namespace DarkDepths.Core
         [SerializeField] private float _brightnessMax = 1.5f;
         [SerializeField] private float _brightnessDefault = 1f;
 
+        [Header("Visual effects")]
+        [Tooltip("Turns the post-processing of docs/02 down; off by default, on for a phone that cannot afford it.")]
+        [SerializeField] private bool _reduceEffectsDefault;
+
         private float _lookSensitivity;
         private float _brightness;
+        private bool _reduceEffects;
         private bool _loaded;
 
         public event Action Changed;
@@ -59,11 +65,32 @@ namespace DarkDepths.Core
             }
         }
 
+        public bool ReduceEffects
+        {
+            get
+            {
+                EnsureLoaded();
+                return _reduceEffects;
+            }
+            set
+            {
+                EnsureLoaded();
+                if (_reduceEffects == value)
+                {
+                    return;
+                }
+
+                _reduceEffects = value;
+                Changed?.Invoke();
+            }
+        }
+
         public void ResetToDefaults()
         {
             EnsureLoaded();
             LookSensitivity = _lookSensitivityDefault;
             Brightness = _brightnessDefault;
+            ReduceEffects = _reduceEffectsDefault;
         }
 
         public void Save()
@@ -71,6 +98,7 @@ namespace DarkDepths.Core
             EnsureLoaded();
             PlayerPrefs.SetFloat(LookSensitivityKey, _lookSensitivity);
             PlayerPrefs.SetFloat(BrightnessKey, _brightness);
+            PlayerPrefs.SetInt(ReduceEffectsKey, _reduceEffects ? 1 : 0);
             PlayerPrefs.Save();
         }
 
@@ -87,6 +115,7 @@ namespace DarkDepths.Core
                 _lookSensitivityMin, _lookSensitivityMax);
             _brightness = Mathf.Clamp(PlayerPrefs.GetFloat(BrightnessKey, _brightnessDefault),
                 _brightnessMin, _brightnessMax);
+            _reduceEffects = PlayerPrefs.GetInt(ReduceEffectsKey, _reduceEffectsDefault ? 1 : 0) != 0;
         }
 
         private void Set(ref float field, float value)

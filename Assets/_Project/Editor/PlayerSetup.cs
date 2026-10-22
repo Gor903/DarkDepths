@@ -73,6 +73,7 @@ namespace DarkDepths.EditorTools
             cameraComponent.fieldOfView = look.FieldOfView;
             cameraComponent.nearClipPlane = look.NearClipPlane;
             PaletteSetup.ApplyCameraBackground(cameraComponent, PaletteSetup.LoadOrCreateConfig());
+            PostProcessSetup.EnableOnCamera(cameraComponent);
 
             // Mounted on the camera so the beam always follows where the player is looking.
             var flashlightGo = new GameObject("Flashlight", typeof(Light));

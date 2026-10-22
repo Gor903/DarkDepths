@@ -5,7 +5,9 @@
         "DarkDepths.Core",
         "DarkDepths.Run",
         "DarkDepths.Progression",
-        "UnityEngine.UI"
+        "UnityEngine.UI",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.Universal.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

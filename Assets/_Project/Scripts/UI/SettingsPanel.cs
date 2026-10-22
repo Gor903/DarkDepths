@@ -15,6 +15,7 @@ namespace DarkDepths.UI
         [SerializeField] private Button _resetButton;
         [SerializeField] private Slider _lookSensitivitySlider;
         [SerializeField] private Slider _brightnessSlider;
+        [SerializeField] private Toggle _reduceEffectsToggle;
         [SerializeField] private Text _lookSensitivityValue;
         [SerializeField] private Text _brightnessValue;
 
@@ -39,6 +40,7 @@ namespace DarkDepths.UI
             _resetButton.onClick.AddListener(ResetToDefaults);
             _lookSensitivitySlider.onValueChanged.AddListener(OnLookSensitivityChanged);
             _brightnessSlider.onValueChanged.AddListener(OnBrightnessChanged);
+            _reduceEffectsToggle.onValueChanged.AddListener(OnReduceEffectsChanged);
         }
 
         private void OnDisable()
@@ -48,6 +50,7 @@ namespace DarkDepths.UI
             _resetButton.onClick.RemoveListener(ResetToDefaults);
             _lookSensitivitySlider.onValueChanged.RemoveListener(OnLookSensitivityChanged);
             _brightnessSlider.onValueChanged.RemoveListener(OnBrightnessChanged);
+            _reduceEffectsToggle.onValueChanged.RemoveListener(OnReduceEffectsChanged);
             Close();
         }
 
@@ -109,12 +112,23 @@ namespace DarkDepths.UI
             ShowBrightness();
         }
 
+        private void OnReduceEffectsChanged(bool value)
+        {
+            if (_syncing)
+            {
+                return;
+            }
+
+            _settings.ReduceEffects = value;
+        }
+
         // The sliders write back on change, so pushing stored values in needs the callbacks muted.
         private void PullFromSettings()
         {
             _syncing = true;
             _lookSensitivitySlider.value = _settings.LookSensitivity;
             _brightnessSlider.value = _settings.Brightness;
+            _reduceEffectsToggle.isOn = _settings.ReduceEffects;
             _syncing = false;
             ShowLookSensitivity();
             ShowBrightness();
