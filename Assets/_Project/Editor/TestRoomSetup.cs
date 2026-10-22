@@ -17,6 +17,10 @@ namespace DarkDepths.EditorTools
         private const int RoomCells = 3;
         private const int CorridorCells = 3;
 
+        // Down the corridor, facing the door: the one spot where the silhouette is read against an empty wall.
+        private static readonly Vector3 EnemyPosition = new Vector3(0f, 0f, 5f);
+        private const float EnemyYaw = 180f;
+
         private static readonly string[] PickupNames = { "Battery", "Medkit", "Bottle", "Baton", "Loot" };
 
         private static readonly Vector3[] PickupPositions =
@@ -32,6 +36,7 @@ namespace DarkDepths.EditorTools
         public static void CreateTestRoom()
         {
             ModuleSetup.CreateModules();
+            EnemySetup.CreateEnemies();
 
             ModuleConfig modules = ModuleSetup.LoadOrCreateConfig();
             PaletteConfig palette = PaletteSetup.LoadOrCreateConfig();
@@ -53,6 +58,7 @@ namespace DarkDepths.EditorTools
             BuildDoor(root.transform, modules);
             BuildFurniture(root.transform, modules);
             BuildPickups(root.transform, loot);
+            BuildEnemy(root.transform);
 
             PaletteSetup.ApplyRenderSettings(palette);
 
@@ -143,6 +149,15 @@ namespace DarkDepths.EditorTools
                 var pickup = box.AddComponent<Pickup>();
                 SerializedWiring.WireString(pickup, "_displayName", PickupNames[i]);
             }
+        }
+
+        private static void BuildEnemy(Transform parent)
+        {
+            GameObject prefab = EnemySetup.LoadListener();
+            var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent);
+            instance.transform.localPosition = EnemyPosition;
+            instance.transform.localRotation = Quaternion.Euler(0f, EnemyYaw, 0f);
+            TransformUtils.SetInspectorRotation(instance.transform, new Vector3(0f, EnemyYaw, 0f));
         }
 
         // Cell index to a position along a row centred on the origin.

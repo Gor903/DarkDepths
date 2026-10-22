@@ -10,8 +10,6 @@ namespace DarkDepths.EditorTools
     {
         private const string MeshFolder = "Assets/_Project/Art/Models/Generated";
 
-        private static Mesh _unitCube;
-
         private readonly List<Bounds> _boxes = new List<Bounds>();
 
         public IReadOnlyList<Bounds> Boxes => _boxes;
@@ -29,7 +27,7 @@ namespace DarkDepths.EditorTools
             {
                 instances[i] = new CombineInstance
                 {
-                    mesh = UnitCube(),
+                    mesh = UnitCube.Mesh,
                     transform = Matrix4x4.TRS(_boxes[i].center, Quaternion.identity, _boxes[i].size)
                 };
             }
@@ -58,19 +56,6 @@ namespace DarkDepths.EditorTools
             Object.DestroyImmediate(mesh);
             EditorUtility.SetDirty(existing);
             return existing;
-        }
-
-        private static Mesh UnitCube()
-        {
-            if (_unitCube != null)
-            {
-                return _unitCube;
-            }
-
-            GameObject primitive = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            _unitCube = primitive.GetComponent<MeshFilter>().sharedMesh;
-            Object.DestroyImmediate(primitive);
-            return _unitCube;
         }
     }
 }
