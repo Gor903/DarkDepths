@@ -10,6 +10,10 @@ namespace DarkDepths.Core
         private const string LookSensitivityKey = "settings.lookSensitivity";
         private const string BrightnessKey = "settings.brightness";
         private const string ReduceEffectsKey = "settings.reduceEffects";
+        private const string SfxVolumeKey = "settings.volume.sfx";
+        private const string AmbientVolumeKey = "settings.volume.ambient";
+        private const string MusicVolumeKey = "settings.volume.music";
+        private const string SoundHintsKey = "settings.soundHints";
 
         [Header("Look sensitivity, as a multiplier over PlayerLookConfig")]
         [SerializeField] private float _lookSensitivityMin = 0.4f;
@@ -25,9 +29,22 @@ namespace DarkDepths.Core
         [Tooltip("Turns the post-processing of docs/02 down; off by default, on for a phone that cannot afford it.")]
         [SerializeField] private bool _reduceEffectsDefault;
 
+        [Header("Volume, 1 = the mix as authored")]
+        [SerializeField, Range(0f, 1f)] private float _sfxVolumeDefault = 1f;
+        [SerializeField, Range(0f, 1f)] private float _ambientVolumeDefault = 1f;
+        [SerializeField, Range(0f, 1f)] private float _musicVolumeDefault = 1f;
+
+        [Header("Hearing")]
+        [Tooltip("docs/04: nothing may be audible only, so a strong sound nearby also shows at the edge of the screen.")]
+        [SerializeField] private bool _soundHintsDefault = true;
+
         private float _lookSensitivity;
         private float _brightness;
         private bool _reduceEffects;
+        private float _sfxVolume;
+        private float _ambientVolume;
+        private float _musicVolume;
+        private bool _soundHints;
         private bool _loaded;
 
         public event Action Changed;
@@ -75,13 +92,63 @@ namespace DarkDepths.Core
             set
             {
                 EnsureLoaded();
-                if (_reduceEffects == value)
-                {
-                    return;
-                }
+                Set(ref _reduceEffects, value);
+            }
+        }
 
-                _reduceEffects = value;
-                Changed?.Invoke();
+        public float SfxVolume
+        {
+            get
+            {
+                EnsureLoaded();
+                return _sfxVolume;
+            }
+            set
+            {
+                EnsureLoaded();
+                Set(ref _sfxVolume, Mathf.Clamp01(value));
+            }
+        }
+
+        public float AmbientVolume
+        {
+            get
+            {
+                EnsureLoaded();
+                return _ambientVolume;
+            }
+            set
+            {
+                EnsureLoaded();
+                Set(ref _ambientVolume, Mathf.Clamp01(value));
+            }
+        }
+
+        public float MusicVolume
+        {
+            get
+            {
+                EnsureLoaded();
+                return _musicVolume;
+            }
+            set
+            {
+                EnsureLoaded();
+                Set(ref _musicVolume, Mathf.Clamp01(value));
+            }
+        }
+
+        public bool SoundHints
+        {
+            get
+            {
+                EnsureLoaded();
+                return _soundHints;
+            }
+            set
+            {
+                EnsureLoaded();
+                Set(ref _soundHints, value);
             }
         }
 
@@ -91,6 +158,10 @@ namespace DarkDepths.Core
             LookSensitivity = _lookSensitivityDefault;
             Brightness = _brightnessDefault;
             ReduceEffects = _reduceEffectsDefault;
+            SfxVolume = _sfxVolumeDefault;
+            AmbientVolume = _ambientVolumeDefault;
+            MusicVolume = _musicVolumeDefault;
+            SoundHints = _soundHintsDefault;
         }
 
         public void Save()
@@ -99,6 +170,10 @@ namespace DarkDepths.Core
             PlayerPrefs.SetFloat(LookSensitivityKey, _lookSensitivity);
             PlayerPrefs.SetFloat(BrightnessKey, _brightness);
             PlayerPrefs.SetInt(ReduceEffectsKey, _reduceEffects ? 1 : 0);
+            PlayerPrefs.SetFloat(SfxVolumeKey, _sfxVolume);
+            PlayerPrefs.SetFloat(AmbientVolumeKey, _ambientVolume);
+            PlayerPrefs.SetFloat(MusicVolumeKey, _musicVolume);
+            PlayerPrefs.SetInt(SoundHintsKey, _soundHints ? 1 : 0);
             PlayerPrefs.Save();
         }
 
@@ -116,11 +191,26 @@ namespace DarkDepths.Core
             _brightness = Mathf.Clamp(PlayerPrefs.GetFloat(BrightnessKey, _brightnessDefault),
                 _brightnessMin, _brightnessMax);
             _reduceEffects = PlayerPrefs.GetInt(ReduceEffectsKey, _reduceEffectsDefault ? 1 : 0) != 0;
+            _sfxVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(SfxVolumeKey, _sfxVolumeDefault));
+            _ambientVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(AmbientVolumeKey, _ambientVolumeDefault));
+            _musicVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(MusicVolumeKey, _musicVolumeDefault));
+            _soundHints = PlayerPrefs.GetInt(SoundHintsKey, _soundHintsDefault ? 1 : 0) != 0;
         }
 
         private void Set(ref float field, float value)
         {
             if (Mathf.Approximately(field, value))
+            {
+                return;
+            }
+
+            field = value;
+            Changed?.Invoke();
+        }
+
+        private void Set(ref bool field, bool value)
+        {
+            if (field == value)
             {
                 return;
             }

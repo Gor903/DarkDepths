@@ -21,6 +21,7 @@ MonoBehaviour:
   _pitchMax: 1
   _loop: 1
   _priority: 90
+  _hints: 0
   _spatialBlend: 1
   _minDistance: 1.5
   _maxDistance: 14

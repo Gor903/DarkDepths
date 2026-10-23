@@ -13,7 +13,8 @@
         "DarkDepths.Save",
         "DarkDepths.Run",
         "DarkDepths.Loot",
-        "DarkDepths.Progression"
+        "DarkDepths.Progression",
+        "DarkDepths.UI"
     ],
     "includePlatforms": [
         "Editor"

@@ -16,11 +16,21 @@ namespace DarkDepths.UI
         [SerializeField] private Slider _lookSensitivitySlider;
         [SerializeField] private Slider _brightnessSlider;
         [SerializeField] private Toggle _reduceEffectsToggle;
+        [SerializeField] private Slider _sfxVolumeSlider;
+        [SerializeField] private Slider _ambientVolumeSlider;
+        [SerializeField] private Slider _musicVolumeSlider;
+        [SerializeField] private Toggle _soundHintsToggle;
         [SerializeField] private Text _lookSensitivityValue;
         [SerializeField] private Text _brightnessValue;
+        [SerializeField] private Text _sfxVolumeValue;
+        [SerializeField] private Text _ambientVolumeValue;
+        [SerializeField] private Text _musicVolumeValue;
 
         private int _shownLookSensitivity = int.MinValue;
         private int _shownBrightness = int.MinValue;
+        private int _shownSfxVolume = int.MinValue;
+        private int _shownAmbientVolume = int.MinValue;
+        private int _shownMusicVolume = int.MinValue;
         private bool _isOpen;
         private bool _syncing;
 
@@ -30,6 +40,10 @@ namespace DarkDepths.UI
             _lookSensitivitySlider.maxValue = _settings.LookSensitivityMax;
             _brightnessSlider.minValue = _settings.BrightnessMin;
             _brightnessSlider.maxValue = _settings.BrightnessMax;
+            // Volume runs from silence to the mix as authored; nothing is ever turned up past it.
+            SetUnitRange(_sfxVolumeSlider);
+            SetUnitRange(_ambientVolumeSlider);
+            SetUnitRange(_musicVolumeSlider);
             _window.SetActive(false);
         }
 
@@ -41,6 +55,10 @@ namespace DarkDepths.UI
             _lookSensitivitySlider.onValueChanged.AddListener(OnLookSensitivityChanged);
             _brightnessSlider.onValueChanged.AddListener(OnBrightnessChanged);
             _reduceEffectsToggle.onValueChanged.AddListener(OnReduceEffectsChanged);
+            _sfxVolumeSlider.onValueChanged.AddListener(OnSfxVolumeChanged);
+            _ambientVolumeSlider.onValueChanged.AddListener(OnAmbientVolumeChanged);
+            _musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
+            _soundHintsToggle.onValueChanged.AddListener(OnSoundHintsChanged);
         }
 
         private void OnDisable()
@@ -51,6 +69,10 @@ namespace DarkDepths.UI
             _lookSensitivitySlider.onValueChanged.RemoveListener(OnLookSensitivityChanged);
             _brightnessSlider.onValueChanged.RemoveListener(OnBrightnessChanged);
             _reduceEffectsToggle.onValueChanged.RemoveListener(OnReduceEffectsChanged);
+            _sfxVolumeSlider.onValueChanged.RemoveListener(OnSfxVolumeChanged);
+            _ambientVolumeSlider.onValueChanged.RemoveListener(OnAmbientVolumeChanged);
+            _musicVolumeSlider.onValueChanged.RemoveListener(OnMusicVolumeChanged);
+            _soundHintsToggle.onValueChanged.RemoveListener(OnSoundHintsChanged);
             Close();
         }
 
@@ -122,6 +144,49 @@ namespace DarkDepths.UI
             _settings.ReduceEffects = value;
         }
 
+        private void OnSfxVolumeChanged(float value)
+        {
+            if (_syncing)
+            {
+                return;
+            }
+
+            _settings.SfxVolume = value;
+            ShowSfxVolume();
+        }
+
+        private void OnAmbientVolumeChanged(float value)
+        {
+            if (_syncing)
+            {
+                return;
+            }
+
+            _settings.AmbientVolume = value;
+            ShowAmbientVolume();
+        }
+
+        private void OnMusicVolumeChanged(float value)
+        {
+            if (_syncing)
+            {
+                return;
+            }
+
+            _settings.MusicVolume = value;
+            ShowMusicVolume();
+        }
+
+        private void OnSoundHintsChanged(bool value)
+        {
+            if (_syncing)
+            {
+                return;
+            }
+
+            _settings.SoundHints = value;
+        }
+
         // The sliders write back on change, so pushing stored values in needs the callbacks muted.
         private void PullFromSettings()
         {
@@ -129,9 +194,16 @@ namespace DarkDepths.UI
             _lookSensitivitySlider.value = _settings.LookSensitivity;
             _brightnessSlider.value = _settings.Brightness;
             _reduceEffectsToggle.isOn = _settings.ReduceEffects;
+            _sfxVolumeSlider.value = _settings.SfxVolume;
+            _ambientVolumeSlider.value = _settings.AmbientVolume;
+            _musicVolumeSlider.value = _settings.MusicVolume;
+            _soundHintsToggle.isOn = _settings.SoundHints;
             _syncing = false;
             ShowLookSensitivity();
             ShowBrightness();
+            ShowSfxVolume();
+            ShowAmbientVolume();
+            ShowMusicVolume();
         }
 
         private void ShowLookSensitivity()
@@ -142,6 +214,27 @@ namespace DarkDepths.UI
         private void ShowBrightness()
         {
             _shownBrightness = ShowPercent(_brightnessValue, _settings.Brightness, _shownBrightness);
+        }
+
+        private void ShowSfxVolume()
+        {
+            _shownSfxVolume = ShowPercent(_sfxVolumeValue, _settings.SfxVolume, _shownSfxVolume);
+        }
+
+        private void ShowAmbientVolume()
+        {
+            _shownAmbientVolume = ShowPercent(_ambientVolumeValue, _settings.AmbientVolume, _shownAmbientVolume);
+        }
+
+        private void ShowMusicVolume()
+        {
+            _shownMusicVolume = ShowPercent(_musicVolumeValue, _settings.MusicVolume, _shownMusicVolume);
+        }
+
+        private static void SetUnitRange(Slider slider)
+        {
+            slider.minValue = 0f;
+            slider.maxValue = 1f;
         }
 
         // Only a changed whole percent rebuilds the label, so dragging a slider does not allocate every frame.

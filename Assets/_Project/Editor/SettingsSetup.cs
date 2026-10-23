@@ -22,7 +22,9 @@ namespace DarkDepths.EditorTools
         private const string PlayerPrefabPath = "Assets/_Project/Prefabs/Player.prefab";
         private const string SandboxScenePath = "Assets/_Project/Scenes/Sandbox.unity";
 
-        private const float RowHeight = 110f;
+        private const float RowHeight = 98f;
+        private const float MarkerLength = 180f;
+        private const float MarkerThickness = 8f;
         private const float HandleSize = 64f;
         private const float ButtonWidth = 240f;
         private const float ButtonHeight = 88f;
@@ -86,6 +88,16 @@ namespace DarkDepths.EditorTools
             var overlay = overlayRect.gameObject.AddComponent<BrightnessOverlay>();
             Wire(overlay, "_settings", settings);
 
+            // A sound that matters is shown as well as heard, on the ring just inside the safe area.
+            RectTransform hintRect = CreateStretched("SoundHints", rootRect, Vector2.zero, Vector2.one);
+            RectTransform marker = CreateCentered("Marker", hintRect, new Vector2(MarkerLength, MarkerThickness));
+            Image markerImage = AddImage(marker, new Color(TextColor.r, TextColor.g, TextColor.b, 0f));
+            markerImage.raycastTarget = false;
+            var hints = hintRect.gameObject.AddComponent<SoundHintOverlay>();
+            Wire(hints, "_settings", settings);
+            Wire(hints, "_marker", marker);
+            Wire(hints, "_graphic", markerImage);
+
             RectTransform safeArea = CreateStretched("SafeArea", rootRect, Vector2.zero, Vector2.one);
             safeArea.gameObject.AddComponent<SafeAreaFitter>();
 
@@ -100,7 +112,7 @@ namespace DarkDepths.EditorTools
             RectTransform window = CreateStretched("Window", rootRect, Vector2.zero, Vector2.one);
             AddImage(window, BackdropColor);
 
-            RectTransform panel = CreateCentered("Panel", window, new Vector2(940f, 680f));
+            RectTransform panel = CreateCentered("Panel", window, new Vector2(1040f, 940f));
             AddImage(panel, PanelColor);
 
             CreateLabel(panel, "Title", "Settings", 44, TextAnchor.UpperCenter,
@@ -109,6 +121,10 @@ namespace DarkDepths.EditorTools
             Slider lookSlider = CreateRow(panel, 0, "Look sensitivity", out Text lookValue);
             Slider brightnessSlider = CreateRow(panel, 1, "Brightness", out Text brightnessValue);
             Toggle reduceEffectsToggle = CreateToggleRow(panel, 2, "Reduce effects");
+            Slider sfxSlider = CreateRow(panel, 3, "Sound effects", out Text sfxValue);
+            Slider ambientSlider = CreateRow(panel, 4, "Ambience", out Text ambientValue);
+            Slider musicSlider = CreateRow(panel, 5, "Music", out Text musicValue);
+            Toggle soundHintsToggle = CreateToggleRow(panel, 6, "Sound hints");
 
             RectTransform resetRect = CreateCorner("ResetButton", panel, new Vector2(0f, 0f));
             resetRect.anchoredPosition = new Vector2(40f, 40f);
@@ -128,8 +144,15 @@ namespace DarkDepths.EditorTools
             Wire(settingsPanel, "_lookSensitivitySlider", lookSlider);
             Wire(settingsPanel, "_brightnessSlider", brightnessSlider);
             Wire(settingsPanel, "_reduceEffectsToggle", reduceEffectsToggle);
+            Wire(settingsPanel, "_sfxVolumeSlider", sfxSlider);
+            Wire(settingsPanel, "_ambientVolumeSlider", ambientSlider);
+            Wire(settingsPanel, "_musicVolumeSlider", musicSlider);
+            Wire(settingsPanel, "_soundHintsToggle", soundHintsToggle);
             Wire(settingsPanel, "_lookSensitivityValue", lookValue);
             Wire(settingsPanel, "_brightnessValue", brightnessValue);
+            Wire(settingsPanel, "_sfxVolumeValue", sfxValue);
+            Wire(settingsPanel, "_ambientVolumeValue", ambientValue);
+            Wire(settingsPanel, "_musicVolumeValue", musicValue);
 
             // Saved closed; SettingsPanel reopens it on demand and the scene view stays readable.
             window.gameObject.SetActive(false);

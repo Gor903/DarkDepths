@@ -21,6 +21,10 @@ namespace DarkDepths.Audio
         [Tooltip("As on AudioSource: 0 is the voice that survives, 256 the first one dropped when the pool is full.")]
         [SerializeField, Range(0, 256)] private int _priority = 128;
 
+        [Header("Hearing")]
+        [Tooltip("docs/04: a sound this strong is also shown at the edge of the screen, never heard alone.")]
+        [SerializeField] private bool _hints;
+
         [Header("Space")]
         [Tooltip("1 is a sound in the room, 0 a sound in the player's head — UI and music belong at 0.")]
         [SerializeField, Range(0f, 1f)] private float _spatialBlend = 1f;
@@ -32,6 +36,8 @@ namespace DarkDepths.Audio
         public bool Loop => _loop;
 
         public int Priority => _priority;
+
+        public bool Hints => _hints;
 
         public float SpatialBlend => _spatialBlend;
 

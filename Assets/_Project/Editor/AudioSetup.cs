@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using DarkDepths.Audio;
+using DarkDepths.Core;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace DarkDepths.EditorTools
         private const string MixerPath = MixerFolder + "/GameMixer.mixer";
         private const string ConfigFolder = "Assets/_Project/Config";
         private const string ConfigPath = ConfigFolder + "/AudioConfig.asset";
+        private const string SettingsPath = ConfigFolder + "/UserSettings.asset";
         private const string SandboxScenePath = "Assets/_Project/Scenes/Sandbox.unity";
         private const string ServiceName = "Audio";
 
@@ -206,8 +208,15 @@ namespace DarkDepths.EditorTools
                 UnityEngine.Object.DestroyImmediate(existing);
             }
 
-            var root = new GameObject(ServiceName, typeof(AudioService));
+            var root = new GameObject(ServiceName, typeof(AudioService), typeof(VolumeSettings));
             SerializedWiring.Wire(root.GetComponent<AudioService>(), "_config", config);
+
+            // The sliders of docs/04 reach the mixer from here; without the asset the mix stays as authored.
+            var settings = AssetDatabase.LoadAssetAtPath<UserSettings>(SettingsPath);
+            if (settings != null)
+            {
+                SerializedWiring.Wire(root.GetComponent<VolumeSettings>(), "_settings", settings);
+            }
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);

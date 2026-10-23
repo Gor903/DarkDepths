@@ -51,10 +51,11 @@ namespace DarkDepths.EditorTools
             BuildLoop(RoomTone, AmbienceClipFactory.CreateRoomTone(AmbientFolder), 0.35f, 0.35f, 6f, 26f);
             BuildLoop(Vent, AmbienceClipFactory.CreateVent(AmbientFolder), 0.5f, 1f, 1.5f, 14f);
 
-            BuildOneShot(DoorOpen, InteractionClipFactory.CreateDoorOpen(DoorFolder), 110, 1.5f, 22f);
-            BuildOneShot(DoorClose, InteractionClipFactory.CreateDoorClose(DoorFolder), 110, 1.5f, 22f);
-            BuildOneShot(DoorLatch, InteractionClipFactory.CreateDoorLatch(DoorFolder), 110, 1.5f, 18f);
-            BuildOneShot(PickupTake, InteractionClipFactory.CreatePickup(ItemFolder), 120, 1f, 12f);
+            // A door carries across a room, so it is one of the sounds the screen has to show as well.
+            BuildOneShot(DoorOpen, InteractionClipFactory.CreateDoorOpen(DoorFolder), 110, 1.5f, 22f, true);
+            BuildOneShot(DoorClose, InteractionClipFactory.CreateDoorClose(DoorFolder), 110, 1.5f, 22f, true);
+            BuildOneShot(DoorLatch, InteractionClipFactory.CreateDoorLatch(DoorFolder), 110, 1.5f, 18f, true);
+            BuildOneShot(PickupTake, InteractionClipFactory.CreatePickup(ItemFolder), 120, 1f, 12f, false);
         }
 
         private static AudioCue BuildLoop(string cueName, string clipPath, float volume, float spatialBlend,
@@ -79,7 +80,7 @@ namespace DarkDepths.EditorTools
         }
 
         private static AudioCue BuildOneShot(string cueName, string[] clipPaths, int priority,
-            float minDistance, float maxDistance)
+            float minDistance, float maxDistance, bool hints)
         {
             AudioCue cue = Cue(cueName, clipPaths);
             SerializedWiring.WireInt(cue, "_channel", (int)AudioChannel.Sfx);
@@ -89,6 +90,7 @@ namespace DarkDepths.EditorTools
             SerializedWiring.WireFloat(cue, "_pitchMin", 0.95f);
             SerializedWiring.WireFloat(cue, "_pitchMax", 1.05f);
             SerializedWiring.WireInt(cue, "_priority", priority);
+            SerializedWiring.WireBool(cue, "_hints", hints);
             SerializedWiring.WireFloat(cue, "_spatialBlend", 1f);
             SerializedWiring.WireFloat(cue, "_minDistance", minDistance);
             SerializedWiring.WireFloat(cue, "_maxDistance", maxDistance);

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace DarkDepths.Audio
@@ -5,6 +6,9 @@ namespace DarkDepths.Audio
     // What the rest of the game is allowed to ask of the audio side; a test can stand in for it.
     public interface IAudioService
     {
+        // Where a sound played that must not be heard alone; the screen shows it too (docs/04).
+        event Action<Vector3> Hinted;
+
         AudioHandle Play(AudioCue cue, Vector3 position);
 
         // The same cue played softer: a crouched step is the same sound, not a different one.

@@ -3,6 +3,7 @@
     "rootNamespace": "DarkDepths.UI",
     "references": [
         "DarkDepths.Core",
+        "DarkDepths.Audio",
         "DarkDepths.Run",
         "DarkDepths.Progression",
         "UnityEngine.UI",

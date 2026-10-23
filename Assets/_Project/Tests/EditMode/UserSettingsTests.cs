@@ -90,6 +90,8 @@ namespace DarkDepths.Tests.EditMode
             _settings.LookSensitivity = 1.7f;
             _settings.Brightness = 0.8f;
             _settings.ReduceEffects = true;
+            _settings.AmbientVolume = 0.3f;
+            _settings.SoundHints = false;
             _settings.Save();
 
             var reloaded = ScriptableObject.CreateInstance<UserSettings>();
@@ -98,11 +100,60 @@ namespace DarkDepths.Tests.EditMode
                 Assert.AreEqual(1.7f, reloaded.LookSensitivity, Tolerance);
                 Assert.AreEqual(0.8f, reloaded.Brightness, Tolerance);
                 Assert.IsTrue(reloaded.ReduceEffects);
+                Assert.AreEqual(0.3f, reloaded.AmbientVolume, Tolerance);
+                Assert.IsFalse(reloaded.SoundHints);
             }
             finally
             {
                 Object.DestroyImmediate(reloaded);
             }
+        }
+
+        // docs/04: the mix is authored at full; the sliders only take it down.
+        [Test]
+        public void VolumesStartAtTheAuthoredMix()
+        {
+            Assert.AreEqual(1f, _settings.SfxVolume, Tolerance);
+            Assert.AreEqual(1f, _settings.AmbientVolume, Tolerance);
+            Assert.AreEqual(1f, _settings.MusicVolume, Tolerance);
+        }
+
+        [Test]
+        public void VolumesClampToSilenceAndFull()
+        {
+            _settings.SfxVolume = -1f;
+            _settings.MusicVolume = 4f;
+
+            Assert.AreEqual(0f, _settings.SfxVolume, Tolerance);
+            Assert.AreEqual(1f, _settings.MusicVolume, Tolerance);
+        }
+
+        // docs/04 asks that nothing be audible only, so the hints start on.
+        [Test]
+        public void SoundHintsStartOnAndReportOneChange()
+        {
+            Assert.IsTrue(_settings.SoundHints);
+
+            int changes = 0;
+            _settings.Changed += () => changes++;
+
+            _settings.SoundHints = false;
+            _settings.SoundHints = false;
+
+            Assert.IsFalse(_settings.SoundHints);
+            Assert.AreEqual(1, changes);
+        }
+
+        [Test]
+        public void ResetReturnsVolumesAndHints()
+        {
+            _settings.AmbientVolume = 0.2f;
+            _settings.SoundHints = false;
+
+            _settings.ResetToDefaults();
+
+            Assert.AreEqual(1f, _settings.AmbientVolume, Tolerance);
+            Assert.IsTrue(_settings.SoundHints);
         }
     }
 }

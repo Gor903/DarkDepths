@@ -1,6 +1,8 @@
+using System;
 using DarkDepths.Core;
 using UnityEngine;
 using UnityEngine.Audio;
+using Random = UnityEngine.Random;
 
 namespace DarkDepths.Audio
 {
@@ -16,6 +18,8 @@ namespace DarkDepths.Audio
         private VoiceAllocator _allocator;
         private VoiceOcclusion _occlusion;
         private Transform _listener;
+
+        public event Action<Vector3> Hinted;
 
         public int VoiceCount => _sources == null ? 0 : _sources.Length;
 
@@ -247,6 +251,12 @@ namespace DarkDepths.Audio
             }
 
             source.Play();
+
+            if (cue.Hints)
+            {
+                Hinted?.Invoke(position);
+            }
+
             return handle;
         }
 
