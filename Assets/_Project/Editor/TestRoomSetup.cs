@@ -79,6 +79,8 @@ namespace DarkDepths.EditorTools
             ReverbSetup.CreateReverb();
             // The kit is rebuilt from scratch above, so the door gets its ear back here, not before.
             NoiseSetup.CreateNoise();
+            // The bottle is built after its cue exists and handed to the player.
+            ThrowableSetup.CreateThrowable();
             // Last: the ground the enemies walk on is baked from the room that now exists.
             NavigationSetup.CreateNavigation();
         }

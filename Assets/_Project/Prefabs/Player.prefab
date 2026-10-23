@@ -317,6 +317,7 @@ GameObject:
   - component: {fileID: 1037844710433233126}
   - component: {fileID: 5163221947547734175}
   - component: {fileID: 1357215645775083834}
+  - component: {fileID: 2573260540077574337}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -470,3 +471,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cb8a8611c863cba69bb4ec1bbcf154f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.FootstepNoise
+--- !u!114 &2573260540077574337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6950857301761425500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fc763a702b04f40bad5462d33030474, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.PlayerThrower
+  _input: {fileID: 2132872019784699300}
+  _prefab: {fileID: 3101144951817584413, guid: 113991c659a85276484293e61cf64f3c, type: 3}
+  _origin: {fileID: 8885969935047180923}
+  _poolSize: 4
+  _startingCount: 3
+  _throwSpeed: 9
+  _releaseDistance: 0.5
+  _spin: 6
+  _cooldown: 0.4

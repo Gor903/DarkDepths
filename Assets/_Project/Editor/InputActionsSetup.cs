@@ -46,6 +46,10 @@ namespace DarkDepths.EditorTools
             InputAction interact = map.AddAction("Interact", InputActionType.Button);
             interact.AddBinding("<Keyboard>/e");
 
+            InputAction throwItem = map.AddAction("Throw", InputActionType.Button);
+            throwItem.AddBinding("<Keyboard>/q");
+            throwItem.AddBinding("<Mouse>/rightButton");
+
             Directory.CreateDirectory(Path.GetDirectoryName(AssetPath));
             File.WriteAllText(AssetPath, asset.ToJson());
             Object.DestroyImmediate(asset);

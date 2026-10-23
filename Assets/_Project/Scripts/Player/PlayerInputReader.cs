@@ -21,9 +21,11 @@ namespace DarkDepths.Player
         private InputAction _crouch;
         private InputAction _flashlight;
         private InputAction _interact;
+        private InputAction _throw;
         private bool _crouchTogglePending;
         private bool _flashlightTogglePending;
         private bool _interactPending;
+        private bool _throwPending;
 
         private bool Blocked => _inputGate != null && _inputGate.IsBlocked;
 
@@ -81,6 +83,14 @@ namespace DarkDepths.Player
             return !Blocked && (fromKeyboard || fromTouch);
         }
 
+        public bool ConsumeThrow()
+        {
+            bool fromTouch = _touch != null && _touch.ConsumeThrow();
+            bool fromKeyboard = _throwPending;
+            _throwPending = false;
+            return !Blocked && (fromKeyboard || fromTouch);
+        }
+
         public bool ConsumeInteract()
         {
             bool fromTouch = _touch != null && _touch.ConsumeInteract();
@@ -98,6 +108,7 @@ namespace DarkDepths.Player
             _crouch = _map.FindAction("Crouch", true);
             _flashlight = _map.FindAction("Flashlight", true);
             _interact = _map.FindAction("Interact", true);
+            _throw = _map.FindAction("Throw", true);
         }
 
         private void OnEnable()
@@ -105,6 +116,7 @@ namespace DarkDepths.Player
             _crouch.performed += OnCrouchPerformed;
             _flashlight.performed += OnFlashlightPerformed;
             _interact.performed += OnInteractPerformed;
+            _throw.performed += OnThrowPerformed;
             _map.Enable();
         }
 
@@ -114,6 +126,7 @@ namespace DarkDepths.Player
             _crouch.performed -= OnCrouchPerformed;
             _flashlight.performed -= OnFlashlightPerformed;
             _interact.performed -= OnInteractPerformed;
+            _throw.performed -= OnThrowPerformed;
             _crouchTogglePending = false;
             _flashlightTogglePending = false;
             _interactPending = false;
@@ -127,6 +140,11 @@ namespace DarkDepths.Player
         private void OnFlashlightPerformed(InputAction.CallbackContext context)
         {
             _flashlightTogglePending = true;
+        }
+
+        private void OnThrowPerformed(InputAction.CallbackContext context)
+        {
+            _throwPending = true;
         }
 
         private void OnInteractPerformed(InputAction.CallbackContext context)

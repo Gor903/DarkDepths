@@ -85,6 +85,10 @@ namespace DarkDepths.EditorTools
             AddImage(interact, new Color(1f, 1f, 1f, 0.3f));
             var interactButton = interact.gameObject.AddComponent<TouchButton>();
 
+            RectTransform throwItem = CreateCorner("ThrowButton", safeArea, new Vector2(1f, 0f), config.ButtonSize);
+            AddImage(throwItem, new Color(1f, 1f, 1f, 0.22f));
+            var throwButton = throwItem.gameObject.AddComponent<TouchButton>();
+
             Text promptLabel = CreatePromptLabel(safeArea);
 
             Wire(joystick, "_stick", stick);
@@ -99,8 +103,9 @@ namespace DarkDepths.EditorTools
             Wire(controls, "_crouchButton", crouchButton);
             Wire(controls, "_flashlightButton", flashlightButton);
             Wire(controls, "_interactButton", interactButton);
+            Wire(controls, "_throwButton", throwButton);
             Wire(controls, "_promptLabel", promptLabel);
-            WireArray(controls, "_mirrorTargets", new Object[] { moveSide, lookSide, crouch, flashlight, interact });
+            WireArray(controls, "_mirrorTargets", new Object[] { moveSide, lookSide, crouch, flashlight, interact, throwItem });
 
             GameObject saved = PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
             Object.DestroyImmediate(root);

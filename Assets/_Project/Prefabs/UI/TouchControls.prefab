@@ -538,12 +538,14 @@ MonoBehaviour:
   _crouchButton: {fileID: 2282866131135034279}
   _flashlightButton: {fileID: 348263189064209481}
   _interactButton: {fileID: 7498551303887110283}
+  _throwButton: {fileID: 9068554902597719625}
   _mirrorTargets:
   - {fileID: 4778105757947330050}
   - {fileID: 2237591962757663035}
   - {fileID: 391667441008421201}
   - {fileID: 427279972155085888}
   - {fileID: 6680324570074678985}
+  - {fileID: 6756212624730311217}
   _promptLabel: {fileID: 344196740010261849}
 --- !u!1 &6724586890048784722
 GameObject:
@@ -725,6 +727,94 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e39471fa2c6262acba2167a29114f6d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.LookArea
+--- !u!1 &7452564699915693153
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6756212624730311217}
+  - component: {fileID: 1567965872612170330}
+  - component: {fileID: 1328382122009805374}
+  - component: {fileID: 9068554902597719625}
+  m_Layer: 0
+  m_Name: ThrowButton
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6756212624730311217
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7452564699915693153}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2230403527737994489}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 160, y: 160}
+  m_Pivot: {x: 1, y: 0}
+--- !u!222 &1567965872612170330
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7452564699915693153}
+  m_CullTransparentMesh: 1
+--- !u!114 &1328382122009805374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7452564699915693153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.22}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &9068554902597719625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7452564699915693153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e1e0932ec6a6cca6a4720443a57bbcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.TouchButton
 --- !u!1 &8321192946009808008
 GameObject:
   m_ObjectHideFlags: 0
@@ -838,6 +928,7 @@ RectTransform:
   - {fileID: 391667441008421201}
   - {fileID: 427279972155085888}
   - {fileID: 6680324570074678985}
+  - {fileID: 6756212624730311217}
   - {fileID: 9203809176736089930}
   m_Father: {fileID: 6836825007536528533}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -857,4 +948,4 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 335a42803c28fc3fb9330b96d30d0be0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.SafeAreaFitter
+  m_EditorClassIdentifier: DarkDepths.Core::DarkDepths.Core.SafeAreaFitter

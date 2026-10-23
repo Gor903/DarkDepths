@@ -26,6 +26,7 @@ namespace DarkDepths.EditorTools
         private const string DoorClose = "Door_Close";
         private const string DoorLatch = "Door_Latch";
         private const string PickupTake = "Pickup_Take";
+        private const string BottleImpact = "Impact_Bottle";
 
         private const string AmbienceRoot = "Ambience";
 
@@ -56,6 +57,8 @@ namespace DarkDepths.EditorTools
             BuildOneShot(DoorClose, InteractionClipFactory.CreateDoorClose(DoorFolder), 110, 1.5f, 22f, true);
             BuildOneShot(DoorLatch, InteractionClipFactory.CreateDoorLatch(DoorFolder), 110, 1.5f, 18f, true);
             BuildOneShot(PickupTake, InteractionClipFactory.CreatePickup(ItemFolder), 120, 1f, 12f, false);
+            // A bottle thrown to pull something away has to be heard, and shown, from across a room.
+            BuildOneShot(BottleImpact, InteractionClipFactory.CreateBottleImpact(ItemFolder), 100, 1.5f, 26f, true);
         }
 
         private static AudioCue BuildLoop(string cueName, string clipPath, float volume, float spatialBlend,

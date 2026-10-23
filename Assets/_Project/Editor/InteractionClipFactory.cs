@@ -68,6 +68,9 @@ namespace DarkDepths.EditorTools
         private static readonly Impact DoorLatch = new Impact(0.18f, 6000f, 1200f, 0.004f, 95f, 0.05f, 0.5f, 0.7f);
         private static readonly Impact ItemTaken = new Impact(0.22f, 4200f, 900f, 0.04f, 330f, 0.03f, 0.35f, 0.6f);
 
+        // Glass on concrete: a bright scatter over a short ring, loud enough to be worth walking to.
+        private static readonly Impact BottleLanding = new Impact(0.42f, 9000f, 1800f, 0.03f, 2600f, 0.1f, 0.5f, 0.85f);
+
         public static string[] CreateDoorOpen(string folder)
         {
             return Render("Door_Open", folder, DoorOpen, 11);
@@ -86,6 +89,11 @@ namespace DarkDepths.EditorTools
         public static string[] CreatePickup(string folder)
         {
             return Render("Pickup_Take", folder, ItemTaken, 51);
+        }
+
+        public static string[] CreateBottleImpact(string folder)
+        {
+            return Render("Impact_Bottle", folder, BottleLanding, 67);
         }
 
         private static string[] Render(string clipName, string folder, in Creak recipe, int family)

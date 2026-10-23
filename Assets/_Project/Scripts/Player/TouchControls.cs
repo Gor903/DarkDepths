@@ -14,6 +14,7 @@ namespace DarkDepths.Player
         [SerializeField] private TouchButton _crouchButton;
         [SerializeField] private TouchButton _flashlightButton;
         [SerializeField] private TouchButton _interactButton;
+        [SerializeField] private TouchButton _throwButton;
         [SerializeField] private RectTransform[] _mirrorTargets;
         [Tooltip("Lives on this canvas but is driven by PlayerInteractor, which is wired in the scene.")]
         [SerializeField] private Text _promptLabel;
@@ -40,6 +41,11 @@ namespace DarkDepths.Player
         public bool ConsumeInteract()
         {
             return _interactButton.ConsumePress();
+        }
+
+        public bool ConsumeThrow()
+        {
+            return _throwButton != null && _throwButton.ConsumePress();
         }
 
         private void Awake()
@@ -76,6 +82,14 @@ namespace DarkDepths.Player
             var interactRect = (RectTransform)_interactButton.transform;
             interactRect.sizeDelta = new Vector2(size, size);
             interactRect.anchoredPosition = new Vector2(-margin * 2f - size, margin);
+
+            if (_throwButton != null)
+            {
+                // Above interact: the other thing the right thumb does, and never where interact was.
+                var throwRect = (RectTransform)_throwButton.transform;
+                throwRect.sizeDelta = new Vector2(size, size);
+                throwRect.anchoredPosition = new Vector2(-margin * 2f - size, margin * 2f + size);
+            }
         }
 
         private void MirrorLayout()
