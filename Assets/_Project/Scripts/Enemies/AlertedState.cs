@@ -14,10 +14,19 @@ namespace DarkDepths.Enemies
 
         public void Tick(EnemyBrain brain, float deltaTime)
         {
-            if (brain.TimeInState >= brain.Definition.AlertDuration)
+            if (brain.TimeInState < brain.Definition.AlertDuration)
             {
-                brain.Switch(EnemyStateId.Investigate);
+                return;
             }
+
+            if (brain.Body.CanSeeTarget)
+            {
+                brain.Switch(EnemyStateId.Chase);
+                return;
+            }
+
+            // Nothing in sight and nothing left to look at: whatever it was, it is over.
+            brain.Switch(brain.HasInterest ? EnemyStateId.Investigate : EnemyStateId.Patrol);
         }
 
         public void Exit(EnemyBrain brain)

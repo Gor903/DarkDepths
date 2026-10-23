@@ -16,12 +16,18 @@ namespace DarkDepths.Enemies
         [SerializeField] private SilhouetteAnimator _animator;
         [Tooltip("Walked in order; empty means the enemy stands where it was placed.")]
         [SerializeField] private Transform[] _patrolPoints;
+        [Tooltip("Metres above the floor the enemy looks from.")]
+        [SerializeField] private float _eyeHeight = 1.6f;
+        [Tooltip("What blocks a line of sight; the walls of the building.")]
+        [SerializeField] private LayerMask _sightBlockers;
 
         private readonly List<Vector3> _route = new List<Vector3>();
 
         private NavMeshAgent _agent;
         private EnemyBrain _brain;
         private INoiseService _noise;
+        private IPlayerTarget _target;
+        private bool _hunting;
         private float _nextTick;
 
         public EnemyStateId State => _brain == null ? EnemyStateId.Patrol : _brain.State;
@@ -29,6 +35,37 @@ namespace DarkDepths.Enemies
         public Vector3 Position => transform.position;
 
         public float HearingMultiplier => _definition == null ? 0f : _definition.HearingMultiplier;
+
+        public bool HasTarget => _target != null && _target.IsAlive;
+
+        public Vector3 TargetPosition => _target == null ? transform.position : _target.Position;
+
+        public float DistanceToTarget =>
+            _target == null ? float.MaxValue : Vector3.Distance(transform.position, _target.Position);
+
+        // The cone and the range of docs/05, and then a line to be sure a wall is not in the way.
+        public bool CanSeeTarget
+        {
+            get
+            {
+                if (!HasTarget)
+                {
+                    return false;
+                }
+
+                float range = SightCheck.RangeFor(_definition.SightRange, _definition.LightSensitivity,
+                    _target.IsLit);
+                Vector3 eye = transform.position + Vector3.up * _eyeHeight;
+
+                if (!SightCheck.IsInView(eye, transform.forward, _target.EyePosition, range,
+                        _definition.SightAngle))
+                {
+                    return false;
+                }
+
+                return !Physics.Linecast(eye, _target.EyePosition, _sightBlockers, QueryTriggerInteraction.Ignore);
+            }
+        }
 
         public bool HasArrived
         {
@@ -88,6 +125,37 @@ namespace DarkDepths.Enemies
             return false;
         }
 
+        public void Strike()
+        {
+            if (_target != null && DistanceToTarget <= _definition.AttackRange)
+            {
+                _target.Damage(_definition.AttackDamage);
+            }
+        }
+
+        // Counted on the player, so two enemies giving up one at a time keep the warning up.
+        public void BeginHunt()
+        {
+            if (_target == null || _hunting)
+            {
+                return;
+            }
+
+            _hunting = true;
+            _target.AddHunter();
+        }
+
+        public void EndHunt()
+        {
+            if (_target == null || !_hunting)
+            {
+                return;
+            }
+
+            _hunting = false;
+            _target.RemoveHunter();
+        }
+
         public void OnNoiseHeard(in NoiseEvent noise, float perceivedLoudness)
         {
             _brain?.Hear(noise.Position, perceivedLoudness);
@@ -116,6 +184,7 @@ namespace DarkDepths.Enemies
         private void Start()
         {
             _brain.Begin(transform.position);
+            _target = Services.Get<IPlayerTarget>();
 
             _noise = Services.Get<INoiseService>();
             if (_noise == null)
@@ -143,6 +212,9 @@ namespace DarkDepths.Enemies
             {
                 _noise.Unregister(this);
             }
+
+            // Switched off mid-chase, it still has to let go of the player.
+            EndHunt();
         }
 
         private void Update()

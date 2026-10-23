@@ -21,6 +21,12 @@ namespace DarkDepths.Enemies
 
         public void Tick(EnemyBrain brain, float deltaTime)
         {
+            if (brain.Body.CanSeeTarget)
+            {
+                brain.Switch(EnemyStateId.Chase);
+                return;
+            }
+
             // Interest only ever changes upwards, so a different target means a louder noise.
             if (brain.Interest != _target)
             {

@@ -21,6 +21,7 @@ namespace DarkDepths.EditorTools
         private const string PrefabPath = PrefabFolder + "/SettingsPanel.prefab";
         private const string PlayerPrefabPath = "Assets/_Project/Prefabs/Player.prefab";
         private const string SandboxScenePath = "Assets/_Project/Scenes/Sandbox.unity";
+        private const string VignettePath = "Assets/_Project/Art/Textures/Vignette.png";
 
         private const float RowHeight = 98f;
         private const float MarkerLength = 180f;
@@ -97,6 +98,26 @@ namespace DarkDepths.EditorTools
             Wire(hints, "_settings", settings);
             Wire(hints, "_marker", marker);
             Wire(hints, "_graphic", markerImage);
+
+            // Being hunted darkens the edges of the frame, as docs/04 asks; the middle stays readable.
+            RectTransform vignetteRect = CreateStretched("ChaseVignette", rootRect, Vector2.zero, Vector2.one);
+            Image vignetteImage = AddImage(vignetteRect, new Color(0.04f, 0.02f, 0.02f, 0f));
+            vignetteImage.sprite = VignetteSprite.Create(VignettePath);
+            vignetteImage.type = Image.Type.Simple;
+            vignetteImage.raycastTarget = false;
+            var vignette = vignetteRect.gameObject.AddComponent<ChaseVignette>();
+            Wire(vignette, "_graphic", vignetteImage);
+
+            // Last of the overlays, so the end of a run covers everything else on the way down.
+            RectTransform deathRect = CreateStretched("Death", rootRect, Vector2.zero, Vector2.one);
+            Image curtain = AddImage(deathRect, new Color(0f, 0f, 0f, 0f));
+            curtain.raycastTarget = false;
+            Text deathLabel = CreateLabel(deathRect, "Label", "You died", 56, TextAnchor.MiddleCenter,
+                Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            var death = deathRect.gameObject.AddComponent<DeathOverlay>();
+            Wire(death, "_inputGate", gate);
+            Wire(death, "_curtain", curtain);
+            Wire(death, "_label", deathLabel);
 
             RectTransform safeArea = CreateStretched("SafeArea", rootRect, Vector2.zero, Vector2.one);
             safeArea.gameObject.AddComponent<SafeAreaFitter>();

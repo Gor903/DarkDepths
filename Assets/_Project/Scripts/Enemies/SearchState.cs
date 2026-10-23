@@ -20,6 +20,12 @@ namespace DarkDepths.Enemies
 
         public void Tick(EnemyBrain brain, float deltaTime)
         {
+            if (brain.Body.CanSeeTarget)
+            {
+                brain.Switch(EnemyStateId.Chase);
+                return;
+            }
+
             if (brain.HasInterest)
             {
                 brain.Switch(EnemyStateId.Investigate);

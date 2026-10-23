@@ -4,6 +4,7 @@ using DarkDepths.Noise;
 using DarkDepths.World;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace DarkDepths.EditorTools
 {
@@ -131,6 +132,13 @@ namespace DarkDepths.EditorTools
             leaf.transform.SetParent(pivot.transform, false);
             leaf.layer = LayerMask.NameToLayer("Interactable");
             leaf.isStatic = false;
+
+            // A shut door is a wall to anything that walks the NavMesh; swung open, the way clears itself.
+            var obstacle = leaf.AddComponent<NavMeshObstacle>();
+            obstacle.shape = NavMeshObstacleShape.Box;
+            obstacle.center = new Vector3(modules.DoorWidth * 0.5f, modules.DoorHeight * 0.5f, 0f);
+            obstacle.size = new Vector3(modules.DoorWidth, modules.DoorHeight, modules.DoorLeafThickness);
+            obstacle.carving = true;
 
             var door = root.AddComponent<DarkDepths.World.Door>();
             SerializedWiring.Wire(door, "_pivot", pivot.transform);

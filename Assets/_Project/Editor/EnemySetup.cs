@@ -103,6 +103,8 @@ namespace DarkDepths.EditorTools
             var brain = root.AddComponent<EnemyAgent>();
             SerializedWiring.Wire(brain, "_definition", definition);
             SerializedWiring.Wire(brain, "_animator", root.GetComponent<SilhouetteAnimator>());
+            // Walls break a line of sight; the door leaf is on its own layer and is handled by the NavMesh.
+            SerializedWiring.WireInt(brain, "_sightBlockers", 1 << LayerMask.NameToLayer("Wall"));
 
             return root;
         }

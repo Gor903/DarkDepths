@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4913573799338376244}
   - component: {fileID: 3751963319310946613}
   - component: {fileID: 6451737884571644213}
+  - component: {fileID: 3263281875764027603}
   m_Layer: 11
   m_Name: Leaf
   m_TagString: Untagged
@@ -112,6 +113,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.2, y: 2.2, z: 0.08}
   m_Center: {x: 0.6, y: 1.1, z: 0}
+--- !u!208 &3263281875764027603
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4634119411536042012}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.6, y: 1.1, z: 0.04}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.6, y: 1.1, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &5749989858381375324
 GameObject:
   m_ObjectHideFlags: 0
@@ -122,8 +139,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6486833554555201283}
   - component: {fileID: 7435954455264582611}
-  - component: {fileID: 1914146733728016734}
-  - component: {fileID: 1280063397785481482}
+  - component: {fileID: 2552476532941951679}
+  - component: {fileID: 428025762255043611}
   m_Layer: 0
   m_Name: Module_Door
   m_TagString: Untagged
@@ -170,7 +187,7 @@ MonoBehaviour:
   _sweepMargin: 0.08
   _openPrompt: Open
   _closePrompt: Close
---- !u!114 &1914146733728016734
+--- !u!114 &2552476532941951679
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -186,7 +203,7 @@ MonoBehaviour:
   _closeCue: {fileID: 11400000, guid: 60af72bc1d02a94548e5ea41644089d9, type: 2}
   _latchCue: {fileID: 11400000, guid: 2bdd9c14157a4612eb63af96636aaabe, type: 2}
   _source: {fileID: 2434283600214656683}
---- !u!114 &1280063397785481482
+--- !u!114 &428025762255043611
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

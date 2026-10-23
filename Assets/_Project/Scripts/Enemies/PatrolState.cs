@@ -26,6 +26,14 @@ namespace DarkDepths.Enemies
 
         public void Tick(EnemyBrain brain, float deltaTime)
         {
+            // Seen beats heard: the spot is remembered as the thing to look at if they slip away again.
+            if (brain.Body.CanSeeTarget)
+            {
+                brain.Notice(brain.Body.TargetPosition);
+                brain.Switch(EnemyStateId.Alerted);
+                return;
+            }
+
             if (brain.HasInterest)
             {
                 brain.Switch(EnemyStateId.Alerted);

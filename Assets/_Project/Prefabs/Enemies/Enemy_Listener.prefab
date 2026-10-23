@@ -434,6 +434,10 @@ MonoBehaviour:
   _definition: {fileID: 11400000, guid: 876d6f4e43fdb596ea399426157a3691, type: 2}
   _animator: {fileID: 12679187649381220}
   _patrolPoints: []
+  _eyeHeight: 1.6
+  _sightBlockers:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!1 &5987713533852320196
 GameObject:
   m_ObjectHideFlags: 0

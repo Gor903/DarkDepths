@@ -12,6 +12,12 @@ namespace DarkDepths.Tests.EditMode
         {
             public Vector3 Position { get; set; }
             public bool HasArrived { get; set; }
+            public bool CanSeeTarget { get; set; }
+            public bool HasTarget { get; set; } = true;
+            public Vector3 TargetPosition { get; set; }
+            public float DistanceToTarget { get; set; } = 10f;
+            public int Strikes { get; private set; }
+            public int Hunters { get; private set; }
             public Vector3 Destination { get; private set; }
             public float Speed { get; private set; }
             public int Moves { get; private set; }
@@ -35,6 +41,21 @@ namespace DarkDepths.Tests.EditMode
             public void LookAround()
             {
                 Looks++;
+            }
+
+            public void Strike()
+            {
+                Strikes++;
+            }
+
+            public void BeginHunt()
+            {
+                Hunters++;
+            }
+
+            public void EndHunt()
+            {
+                Hunters--;
             }
 
             public bool TrySamplePointNear(Vector3 center, float radius, out Vector3 point)
@@ -252,6 +273,124 @@ namespace DarkDepths.Tests.EditMode
             _brain.Switch(EnemyStateId.Patrol);
 
             Assert.IsFalse(_brain.HasInterest);
+        }
+
+        // docs/05: seen from patrol means the same pause, then the chase rather than a walk over.
+        [Test]
+        public void SeeingThePlayerLeadsThroughAlertedToChase()
+        {
+            _body.TargetPosition = new Vector3(2f, 0f, 0f);
+            _body.CanSeeTarget = true;
+            Tick(0.1f);
+
+            Assert.AreEqual(EnemyStateId.Alerted, _brain.State);
+
+            Tick(_definition.AlertDuration);
+
+            Assert.AreEqual(EnemyStateId.Chase, _brain.State);
+            Assert.AreEqual(_body.TargetPosition, _body.Destination);
+            Assert.AreEqual(_definition.ChaseSpeed, _body.Speed, 0.001f);
+            Assert.AreEqual(1, _body.Hunters, "the player has to be told they are being chased");
+        }
+
+        [Test]
+        public void AChaseFollowsThePlayerAsTheyMove()
+        {
+            Chase();
+
+            _body.TargetPosition = new Vector3(6f, 0f, 3f);
+            Tick(0.1f);
+
+            Assert.AreEqual(_body.TargetPosition, _body.Destination);
+        }
+
+        [Test]
+        public void ClosingToArmsLengthStrikes()
+        {
+            Chase();
+
+            _body.DistanceToTarget = _definition.AttackRange * 0.5f;
+            Tick(0.1f);
+
+            Assert.AreEqual(EnemyStateId.Attack, _brain.State);
+            Assert.AreEqual(1, _body.Strikes, "the first blow lands on arrival");
+
+            Tick(_definition.AttackCooldown * 0.5f);
+            Assert.AreEqual(1, _body.Strikes, "the cooldown holds the second blow");
+
+            Tick(_definition.AttackCooldown);
+            Assert.AreEqual(2, _body.Strikes);
+        }
+
+        [Test]
+        public void SteppingOutOfReachGoesBackToChasing()
+        {
+            Chase();
+            _body.DistanceToTarget = _definition.AttackRange * 0.5f;
+            Tick(0.1f);
+            Assert.AreEqual(EnemyStateId.Attack, _brain.State);
+
+            _body.DistanceToTarget = _definition.AttackRange * 3f;
+            Tick(0.1f);
+
+            Assert.AreEqual(EnemyStateId.Chase, _brain.State);
+            Assert.AreEqual(1, _body.Hunters, "stepping back does not call off the hunt");
+        }
+
+        [Test]
+        public void LosingSightEndsInASearchWhereTheyWereLastSeen()
+        {
+            Chase();
+            var lastSeen = new Vector3(5f, 0f, 1f);
+            _body.TargetPosition = lastSeen;
+            Tick(0.1f);
+
+            _body.CanSeeTarget = false;
+            Tick(_definition.LoseTargetTime * 0.5f);
+            Assert.AreEqual(EnemyStateId.Chase, _brain.State, "it keeps going for a while on the last sighting");
+
+            Tick(_definition.LoseTargetTime);
+
+            Assert.AreEqual(EnemyStateId.Search, _brain.State);
+            Assert.AreEqual(lastSeen + new Vector3(_definition.SearchRadius, 0f, 0f), _body.Destination);
+            Assert.AreEqual(0, _body.Hunters, "the player is no longer being chased");
+        }
+
+        [Test]
+        public void ADeadPlayerIsNotChasedAnyFurther()
+        {
+            Chase();
+
+            _body.HasTarget = false;
+            _body.CanSeeTarget = false;
+            Tick(0.1f);
+
+            Assert.AreEqual(EnemyStateId.Return, _brain.State);
+            Assert.AreEqual(0, _body.Hunters);
+        }
+
+        [Test]
+        public void AGlimpseOfNothingGoesBackOnPatrol()
+        {
+            _body.CanSeeTarget = true;
+            Tick(0.1f);
+            Assert.AreEqual(EnemyStateId.Alerted, _brain.State);
+
+            // Seen for an instant and gone again, with the spot already written off.
+            _body.CanSeeTarget = false;
+            _brain.ForgetInterest();
+            Tick(_definition.AlertDuration);
+
+            Assert.AreEqual(EnemyStateId.Patrol, _brain.State);
+        }
+
+        private void Chase()
+        {
+            _body.TargetPosition = new Vector3(2f, 0f, 0f);
+            _body.CanSeeTarget = true;
+            Tick(0.1f);
+            Tick(_definition.AlertDuration);
+            Assert.AreEqual(EnemyStateId.Chase, _brain.State);
         }
 
         private void Investigate(Vector3 where, float loudness)

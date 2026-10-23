@@ -111,6 +111,13 @@ namespace DarkDepths.EditorTools
             Wire(lookComponent, "_yawTarget", root.transform);
             Wire(lookComponent, "_controller", fpc);
 
+            // What the enemies reach the player through, and what runs out when they reach it.
+            var health = root.AddComponent<PlayerHealth>();
+            var target = root.AddComponent<PlayerTarget>();
+            Wire(target, "_health", health);
+            Wire(target, "_flashlight", flashlight);
+            Wire(target, "_eye", cameraGo.transform);
+
             GameObject saved = PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
             Object.DestroyImmediate(root);
             return saved;

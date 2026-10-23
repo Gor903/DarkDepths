@@ -14,7 +14,9 @@ namespace DarkDepths.Enemies
             new AlertedState(),
             new InvestigateState(),
             new SearchState(),
-            new ReturnState()
+            new ReturnState(),
+            new ChaseState(),
+            new AttackState()
         };
 
         private readonly List<Vector3> _patrol = new List<Vector3>();
@@ -92,6 +94,14 @@ namespace DarkDepths.Enemies
 
             Interest = position;
             InterestLoudness = perceived;
+        }
+
+        // Seen rather than heard. Sight always wins: the last sighting replaces whatever noise was
+        // being followed, however loud that was.
+        public void Notice(Vector3 position)
+        {
+            Interest = position;
+            InterestLoudness = 1f;
         }
 
         public void ForgetInterest()
