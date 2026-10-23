@@ -384,6 +384,101 @@ namespace DarkDepths.Tests.EditMode
             Assert.AreEqual(EnemyStateId.Patrol, _brain.State);
         }
 
+        // The rest of the sight rows of the transition table in docs/05.
+        [Test]
+        public void SeeingThePlayerWhileInvestigatingDropsTheNoise()
+        {
+            Investigate(new Vector3(4f, 0f, 0f), 0.8f);
+
+            _body.TargetPosition = new Vector3(1f, 0f, 2f);
+            _body.CanSeeTarget = true;
+            Tick(0.1f);
+
+            Assert.AreEqual(EnemyStateId.Chase, _brain.State, "what can be seen beats what was heard");
+        }
+
+        [Test]
+        public void SeeingThePlayerWhileSearchingDropsTheSearch()
+        {
+            Search();
+
+            _body.TargetPosition = new Vector3(1f, 0f, 2f);
+            _body.CanSeeTarget = true;
+            Tick(0.1f);
+
+            Assert.AreEqual(EnemyStateId.Chase, _brain.State);
+        }
+
+        [Test]
+        public void SeeingThePlayerOnTheWayHomeTurnsItBackAround()
+        {
+            _brain.Switch(EnemyStateId.Return);
+
+            _body.TargetPosition = new Vector3(1f, 0f, 2f);
+            _body.CanSeeTarget = true;
+            Tick(0.1f);
+
+            Assert.AreEqual(EnemyStateId.Chase, _brain.State);
+        }
+
+        [Test]
+        public void ADeadPlayerEndsAnAttackTheSameWay()
+        {
+            Chase();
+            _body.DistanceToTarget = _definition.AttackRange * 0.5f;
+            Tick(0.1f);
+            Assert.AreEqual(EnemyStateId.Attack, _brain.State);
+
+            int strikes = _body.Strikes;
+            _body.HasTarget = false;
+            Tick(0.1f);
+
+            Assert.AreEqual(EnemyStateId.Return, _brain.State);
+            Assert.AreEqual(strikes, _body.Strikes, "nothing left to hit");
+            Assert.AreEqual(0, _body.Hunters);
+        }
+
+        // The threshold is what is ignored below, not what is ignored at.
+        [Test]
+        public void ANoiseExactlyAtTheThresholdCounts()
+        {
+            _brain.Hear(new Vector3(4f, 0f, 0f), _definition.PerceivedThreshold);
+            Tick(0.1f);
+
+            Assert.AreEqual(EnemyStateId.Alerted, _brain.State);
+        }
+
+        [Test]
+        public void SomethingSeenReplacesTheLoudestNoise()
+        {
+            _brain.Hear(new Vector3(-8f, 0f, 0f), 1f);
+
+            var seen = new Vector3(2f, 0f, 1f);
+            _brain.Notice(seen);
+
+            Assert.AreEqual(seen, _brain.Interest);
+        }
+
+        [Test]
+        public void EachStateStartsItsOwnClock()
+        {
+            Tick(1.5f);
+            Assert.AreEqual(1.5f, _brain.TimeInState, 0.001f);
+
+            _brain.Switch(EnemyStateId.Return);
+
+            Assert.AreEqual(0f, _brain.TimeInState, 0.001f);
+        }
+
+        private void Search()
+        {
+            Investigate(new Vector3(4f, 0f, 0f), 0.8f);
+            _body.HasArrived = true;
+            Tick(0.1f);
+            Tick(_definition.InvestigateTime);
+            Assert.AreEqual(EnemyStateId.Search, _brain.State);
+        }
+
         private void Chase()
         {
             _body.TargetPosition = new Vector3(2f, 0f, 0f);
