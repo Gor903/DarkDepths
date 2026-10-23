@@ -20,6 +20,13 @@ namespace DarkDepths.EditorTools
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
+        public static void WireBool(Object target, string fieldName, bool value)
+        {
+            var serialized = new SerializedObject(target);
+            serialized.FindProperty(fieldName).boolValue = value;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
         public static void WireString(Object target, string fieldName, string value)
         {
             var serialized = new SerializedObject(target);

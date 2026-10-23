@@ -1,7 +1,7 @@
 {
     "name": "DarkDepths.World",
     "rootNamespace": "DarkDepths.World",
-    "references": ["DarkDepths.Core", "Unity.AI.Navigation"],
+    "references": ["DarkDepths.Core", "DarkDepths.Audio", "Unity.AI.Navigation"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

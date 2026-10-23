@@ -65,6 +65,9 @@ namespace DarkDepths.EditorTools
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
+
+            // The room exists before it can be given a background, a door that creaks and pickups that rustle.
+            RoomAudioSetup.CreateRoomAudio();
         }
 
         private static void BuildRoom(Transform parent, ModuleConfig modules)

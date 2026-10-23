@@ -194,6 +194,7 @@ GameObject:
   - component: {fileID: 100378203}
   - component: {fileID: 100378202}
   - component: {fileID: 100378201}
+  - component: {fileID: 100378205}
   m_Layer: 11
   m_Name: Loot
   m_TagString: Untagged
@@ -307,6 +308,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100378199}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &100378205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100378199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ce3410a63ea54d7d8bdb16fde897d55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Loot::DarkDepths.Loot.PickupAudio
+  _cue: {fileID: 11400000, guid: 2d3dda1134ed72155a9563bd080c8a5e, type: 2}
 --- !u!1001 &116373607
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -506,6 +520,7 @@ GameObject:
   - component: {fileID: 180002907}
   - component: {fileID: 180002906}
   - component: {fileID: 180002905}
+  - component: {fileID: 180002909}
   m_Layer: 11
   m_Name: Baton
   m_TagString: Untagged
@@ -619,6 +634,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 180002903}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &180002909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 180002903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ce3410a63ea54d7d8bdb16fde897d55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Loot::DarkDepths.Loot.PickupAudio
+  _cue: {fileID: 11400000, guid: 2d3dda1134ed72155a9563bd080c8a5e, type: 2}
 --- !u!1001 &183584154
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1564,6 +1592,7 @@ GameObject:
   - component: {fileID: 694199802}
   - component: {fileID: 694199801}
   - component: {fileID: 694199800}
+  - component: {fileID: 694199804}
   m_Layer: 11
   m_Name: Battery
   m_TagString: Untagged
@@ -1677,6 +1706,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 694199798}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &694199804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 694199798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ce3410a63ea54d7d8bdb16fde897d55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Loot::DarkDepths.Loot.PickupAudio
+  _cue: {fileID: 11400000, guid: 2d3dda1134ed72155a9563bd080c8a5e, type: 2}
 --- !u!1001 &699161644
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2728,6 +2770,7 @@ GameObject:
   - component: {fileID: 1131598988}
   - component: {fileID: 1131598987}
   - component: {fileID: 1131598986}
+  - component: {fileID: 1131598990}
   m_Layer: 11
   m_Name: Bottle
   m_TagString: Untagged
@@ -2841,6 +2884,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1131598984}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1131598990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131598984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ce3410a63ea54d7d8bdb16fde897d55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Loot::DarkDepths.Loot.PickupAudio
+  _cue: {fileID: 11400000, guid: 2d3dda1134ed72155a9563bd080c8a5e, type: 2}
 --- !u!1 &1293311842
 GameObject:
   m_ObjectHideFlags: 0
@@ -3349,6 +3405,53 @@ Transform:
   - {fileID: 2006577135}
   m_Father: {fileID: 1731899767}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1513236422
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1513236423}
+  - component: {fileID: 1513236424}
+  m_Layer: 0
+  m_Name: Vent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1513236423
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1513236422}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.6, z: 8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1803010553}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1513236424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1513236422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8da1386e8f8cbc38cbf4ca9e11abfbe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Audio::DarkDepths.Audio.AmbienceEmitter
+  _cue: {fileID: 11400000, guid: 046b62756e5738f74bfaf2072d13cb46, type: 2}
+  _volume: 1
+  _checkInterval: 2
 --- !u!1001 &1562225129
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3636,6 +3739,53 @@ Transform:
   - {fileID: 1455230510}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1737944695
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1737944696}
+  - component: {fileID: 1737944697}
+  m_Layer: 0
+  m_Name: RoomTone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1737944696
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1737944695}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.9499999, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1803010553}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1737944697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1737944695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8da1386e8f8cbc38cbf4ca9e11abfbe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Audio::DarkDepths.Audio.AmbienceEmitter
+  _cue: {fileID: 11400000, guid: c34110dad8fe8f7f3b775441410636ed, type: 2}
+  _volume: 1
+  _checkInterval: 2
 --- !u!1001 &1760084719
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3826,6 +3976,39 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7980878417475846665, guid: 526ba1a4248532056aaf433c937a4239, type: 3}
   m_PrefabInstance: {fileID: 1787678862}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1803010552
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1803010553}
+  m_Layer: 0
+  m_Name: Ambience
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1803010553
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1803010552}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1737944696}
+  - {fileID: 1513236423}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1875483455
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3963,6 +4146,7 @@ GameObject:
   - component: {fileID: 1903262869}
   - component: {fileID: 1903262868}
   - component: {fileID: 1903262867}
+  - component: {fileID: 1903262871}
   m_Layer: 11
   m_Name: Medkit
   m_TagString: Untagged
@@ -4076,6 +4260,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1903262865}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1903262871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1903262865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ce3410a63ea54d7d8bdb16fde897d55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Loot::DarkDepths.Loot.PickupAudio
+  _cue: {fileID: 11400000, guid: 2d3dda1134ed72155a9563bd080c8a5e, type: 2}
 --- !u!1001 &1975549158
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4496,3 +4693,4 @@ SceneRoots:
   - {fileID: 1052546819}
   - {fileID: 1293311844}
   - {fileID: 1731899767}
+  - {fileID: 1803010553}

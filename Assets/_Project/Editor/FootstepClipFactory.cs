@@ -1,5 +1,4 @@
 using System.IO;
-using System.Text;
 using DarkDepths.Noise;
 using UnityEngine;
 
@@ -54,7 +53,7 @@ namespace DarkDepths.EditorTools
                 float[] samples = Render(recipe, tune, Seed(surface, variation));
 
                 paths[variation] = folder + "/Footstep_" + surface + "_" + (variation + 1).ToString("00") + ".wav";
-                File.WriteAllBytes(paths[variation], Encode(samples));
+                File.WriteAllBytes(paths[variation], WavFile.Encode(samples, SampleRate));
             }
 
             return paths;
@@ -95,7 +94,7 @@ namespace DarkDepths.EditorTools
             {
                 float t = i / (float)SampleRate;
 
-                lowPass += (NextNoise(ref state) - lowPass) * lowCoefficient;
+                lowPass += (WavFile.NextNoise(ref state) - lowPass) * lowCoefficient;
                 float noise = lowPass;
                 if (highCoefficient > 0f)
                 {
@@ -122,28 +121,8 @@ namespace DarkDepths.EditorTools
                 samples[i] = value * attack * Mathf.Max(0f, release);
             }
 
-            Normalize(samples, recipe.Level);
+            WavFile.Normalize(samples, recipe.Level);
             return samples;
-        }
-
-        private static void Normalize(float[] samples, float level)
-        {
-            float peak = 0f;
-            for (int i = 0; i < samples.Length; i++)
-            {
-                peak = Mathf.Max(peak, Mathf.Abs(samples[i]));
-            }
-
-            if (peak <= 0f)
-            {
-                return;
-            }
-
-            float scale = level / peak;
-            for (int i = 0; i < samples.Length; i++)
-            {
-                samples[i] *= scale;
-            }
         }
 
         private static float Coefficient(float cutoff)
@@ -151,53 +130,9 @@ namespace DarkDepths.EditorTools
             return Mathf.Clamp01(1f - Mathf.Exp(-2f * Mathf.PI * cutoff / SampleRate));
         }
 
-        // Deterministic noise: the same surface and variation must produce the same file on every run.
-        private static float NextNoise(ref uint state)
-        {
-            state ^= state << 13;
-            state ^= state >> 17;
-            state ^= state << 5;
-            return state / (float)uint.MaxValue * 2f - 1f;
-        }
-
         private static uint Seed(SurfaceType surface, int variation)
         {
             return (uint)(((int)surface + 1) * 73856093 ^ (variation + 1) * 19349663) | 1u;
-        }
-
-        private static byte[] Encode(float[] samples)
-        {
-            const int bitsPerSample = 16;
-            const int channels = 1;
-            int dataSize = samples.Length * sizeof(short);
-
-            using (var stream = new MemoryStream(44 + dataSize))
-            using (var writer = new BinaryWriter(stream))
-            {
-                writer.Write(Encoding.ASCII.GetBytes("RIFF"));
-                writer.Write(36 + dataSize);
-                writer.Write(Encoding.ASCII.GetBytes("WAVE"));
-
-                writer.Write(Encoding.ASCII.GetBytes("fmt "));
-                writer.Write(16);
-                writer.Write((short)1);
-                writer.Write((short)channels);
-                writer.Write(SampleRate);
-                writer.Write(SampleRate * channels * bitsPerSample / 8);
-                writer.Write((short)(channels * bitsPerSample / 8));
-                writer.Write((short)bitsPerSample);
-
-                writer.Write(Encoding.ASCII.GetBytes("data"));
-                writer.Write(dataSize);
-                for (int i = 0; i < samples.Length; i++)
-                {
-                    writer.Write((short)Mathf.Clamp(Mathf.RoundToInt(samples[i] * short.MaxValue),
-                        short.MinValue, short.MaxValue));
-                }
-
-                writer.Flush();
-                return stream.ToArray();
-            }
         }
     }
 }

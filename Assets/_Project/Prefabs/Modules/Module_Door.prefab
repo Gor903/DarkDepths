@@ -122,6 +122,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6486833554555201283}
   - component: {fileID: 7435954455264582611}
+  - component: {fileID: 7778322561132279692}
   m_Layer: 0
   m_Name: Module_Door
   m_TagString: Untagged
@@ -168,6 +169,22 @@ MonoBehaviour:
   _sweepMargin: 0.08
   _openPrompt: Open
   _closePrompt: Close
+--- !u!114 &7778322561132279692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5749989858381375324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8e6434532e4054079e3bbc2d9bd245c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.World::DarkDepths.World.DoorAudio
+  _openCue: {fileID: 11400000, guid: 4cda747285534ce0380e0611504ba46b, type: 2}
+  _closeCue: {fileID: 11400000, guid: 60af72bc1d02a94548e5ea41644089d9, type: 2}
+  _latchCue: {fileID: 11400000, guid: 2bdd9c14157a4612eb63af96636aaabe, type: 2}
+  _source: {fileID: 2434283600214656683}
 --- !u!1 &8400232863642684966
 GameObject:
   m_ObjectHideFlags: 0

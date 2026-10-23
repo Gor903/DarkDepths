@@ -1,7 +1,7 @@
 {
     "name": "DarkDepths.Loot",
     "rootNamespace": "DarkDepths.Loot",
-    "references": ["DarkDepths.Core"],
+    "references": ["DarkDepths.Core", "DarkDepths.Audio"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

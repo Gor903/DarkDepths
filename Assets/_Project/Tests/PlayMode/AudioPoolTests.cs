@@ -20,7 +20,10 @@ namespace DarkDepths.Tests.PlayMode
             Assert.IsNotNull(service, "the Sandbox scene has no AudioService");
             Assert.AreEqual(24, service.VoiceCount, "docs/07 budgets 24 simultaneous voices");
             Assert.AreEqual(24, service.transform.childCount);
-            Assert.AreEqual(0, service.ActiveVoices, "nothing plays until something asks for it");
+
+            // The room's background takes its voices at load; everything else waits to be asked for.
+            int ambience = Object.FindObjectsByType<AmbienceEmitter>().Length;
+            Assert.AreEqual(ambience, service.ActiveVoices, "only the background should be running");
 
             var source = service.transform.GetChild(0).GetComponent<AudioSource>();
             Assert.IsNotNull(source);

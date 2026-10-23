@@ -55,7 +55,7 @@ namespace DarkDepths.EditorTools
             for (int i = 0; i < paths.Length; i++)
             {
                 AssetDatabase.ImportAsset(paths[i], ImportAssetOptions.ForceUpdate);
-                ApplyImportSettings(paths[i]);
+                AudioImport.Apply(paths[i]);
                 clips[i] = AssetDatabase.LoadAssetAtPath<AudioClip>(paths[i]);
             }
 
@@ -74,30 +74,6 @@ namespace DarkDepths.EditorTools
 
             EditorUtility.SetDirty(cue);
             return cue;
-        }
-
-        // Short impacts: kept decompressed so a step never waits on a decode, ADPCM so they stay small.
-        private static void ApplyImportSettings(string path)
-        {
-            if (!(AssetImporter.GetAtPath(path) is AudioImporter importer))
-            {
-                return;
-            }
-
-            AudioImporterSampleSettings settings = importer.defaultSampleSettings;
-            settings.loadType = AudioClipLoadType.DecompressOnLoad;
-            settings.compressionFormat = AudioCompressionFormat.ADPCM;
-
-            if (importer.defaultSampleSettings.loadType == settings.loadType &&
-                importer.defaultSampleSettings.compressionFormat == settings.compressionFormat &&
-                importer.forceToMono)
-            {
-                return;
-            }
-
-            importer.defaultSampleSettings = settings;
-            importer.forceToMono = true;
-            importer.SaveAndReimport();
         }
 
         private static SurfaceAudioSet BuildSet(AudioCue[] cues)

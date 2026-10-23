@@ -1,3 +1,4 @@
+using System;
 using DarkDepths.Core;
 using UnityEngine;
 
@@ -22,6 +23,12 @@ namespace DarkDepths.World
         private DoorSwing _swing;
         private Vector3 _leafOffset;
         private Vector3 _leafExtents;
+        private bool _moving;
+
+        // What the leaf is doing, for whoever has to react to it: sound now, noise once that system exists.
+        public event Action Opening;
+        public event Action Closing;
+        public event Action Latched;
 
         public string Prompt => _swing.IsOpen ? _closePrompt : _openPrompt;
 
@@ -35,6 +42,15 @@ namespace DarkDepths.World
             // Which side of the closed leaf the interactor stands on decides which way it swings.
             float side = Vector3.Dot(interactor.transform.position - _pivot.position, transform.forward);
             _swing.Toggle(side);
+
+            if (_swing.IsOpen)
+            {
+                Opening?.Invoke();
+            }
+            else
+            {
+                Closing?.Invoke();
+            }
         }
 
         private void Awake()
@@ -59,9 +75,20 @@ namespace DarkDepths.World
         {
             if (!_swing.IsMoving)
             {
+                if (_moving)
+                {
+                    _moving = false;
+                    // Only a leaf that came to rest in its frame has a latch to close.
+                    if (!_swing.IsOpen)
+                    {
+                        Latched?.Invoke();
+                    }
+                }
+
                 return;
             }
 
+            _moving = true;
             float held = _swing.Angle;
             float next = _swing.Step(Time.deltaTime);
 

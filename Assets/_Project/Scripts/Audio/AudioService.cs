@@ -213,8 +213,13 @@ namespace DarkDepths.Audio
         private void StopSlot(int slot)
         {
             AudioSource source = _sources[slot];
-            source.Stop();
-            source.clip = null;
+            // A scene being torn down takes the voices with it, while a loop is still holding one.
+            if (source != null)
+            {
+                source.Stop();
+                source.clip = null;
+            }
+
             _followed[slot] = null;
             _attached[slot] = false;
             _allocator.ReleaseSlot(slot);

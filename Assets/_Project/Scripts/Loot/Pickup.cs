@@ -1,3 +1,4 @@
+using System;
 using DarkDepths.Core;
 using UnityEngine;
 
@@ -10,6 +11,9 @@ namespace DarkDepths.Loot
 
         private string _prompt;
 
+        // Raised before the object leaves the room, so a listener still has its place to play from.
+        public event Action Taken;
+
         public string Prompt => _prompt;
 
         public bool CanInteract(GameObject interactor)
@@ -19,6 +23,7 @@ namespace DarkDepths.Loot
 
         public void Interact(GameObject interactor)
         {
+            Taken?.Invoke();
             gameObject.SetActive(false);
         }
 
