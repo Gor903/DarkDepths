@@ -14,6 +14,8 @@ namespace DarkDepths.Audio
         private Transform[] _followed;
         private bool[] _attached;
         private VoiceAllocator _allocator;
+        private VoiceOcclusion _occlusion;
+        private Transform _listener;
 
         public int VoiceCount => _sources == null ? 0 : _sources.Length;
 
@@ -98,6 +100,18 @@ namespace DarkDepths.Audio
             }
 
             BuildPool();
+
+            // Cached here and not looked for again: a scene has one listener, and it is on the player.
+            AudioListener listener = FindAnyObjectByType<AudioListener>();
+            if (listener == null)
+            {
+                Debug.LogWarning("AudioService found no AudioListener; nothing will be occluded.", this);
+            }
+            else
+            {
+                _listener = listener.transform;
+            }
+
             Services.Register<IAudioService>(this);
         }
 
@@ -116,6 +130,14 @@ namespace DarkDepths.Audio
             if (_allocator == null)
             {
                 return;
+            }
+
+            bool occlude = _listener != null;
+            Vector3 listener = occlude ? _listener.position : Vector3.zero;
+            float deltaTime = Time.deltaTime;
+            if (occlude)
+            {
+                _occlusion.BeginFrame();
             }
 
             for (int slot = 0; slot < _sources.Length; slot++)
@@ -141,6 +163,12 @@ namespace DarkDepths.Audio
                 if (!source.isPlaying)
                 {
                     StopSlot(slot);
+                    continue;
+                }
+
+                if (occlude)
+                {
+                    _occlusion.Follow(slot, source.transform.position, listener, source.spatialBlend, deltaTime);
                 }
             }
         }
@@ -151,6 +179,7 @@ namespace DarkDepths.Audio
             _sources = new AudioSource[count];
             _followed = new Transform[count];
             _attached = new bool[count];
+            var filters = new AudioLowPassFilter[count];
 
             for (int slot = 0; slot < count; slot++)
             {
@@ -164,9 +193,13 @@ namespace DarkDepths.Audio
                 source.dopplerLevel = _config.DopplerLevel;
                 source.outputAudioMixerGroup = _config.GroupFor(AudioChannel.Sfx);
                 _sources[slot] = source;
+
+                // One filter per voice: what a sound is heard through depends on where that sound is.
+                filters[slot] = holder.AddComponent<AudioLowPassFilter>();
             }
 
             _allocator = new VoiceAllocator(count);
+            _occlusion = new VoiceOcclusion(filters, _config);
         }
 
         private AudioHandle PlayInternal(AudioCue cue, Vector3 position, Transform follow, float volumeScale)
@@ -200,11 +233,18 @@ namespace DarkDepths.Audio
             source.spatialBlend = cue.SpatialBlend;
             source.minDistance = cue.MinDistance;
             source.maxDistance = cue.MaxDistance;
+            // A sound in the player's head is not standing in the room, so it takes none of the room's reverb.
+            source.bypassReverbZones = cue.SpatialBlend <= 0f;
             source.outputAudioMixerGroup = _config.GroupFor(cue.Channel);
             source.transform.position = position;
 
             _followed[slot] = follow;
             _attached[slot] = follow != null;
+
+            if (_listener != null)
+            {
+                _occlusion.Prime(slot, position, _listener.position, cue.SpatialBlend);
+            }
 
             source.Play();
             return handle;
@@ -222,6 +262,7 @@ namespace DarkDepths.Audio
 
             _followed[slot] = null;
             _attached[slot] = false;
+            _occlusion.Release(slot);
             _allocator.ReleaseSlot(slot);
         }
 

@@ -21,3 +21,11 @@ MonoBehaviour:
   _voiceCount: 24
   _rolloff: 0
   _dopplerLevel: 0
+  _occlusionMask:
+    serializedVersion: 2
+    m_Bits: 3072
+  _openCutoff: 22000
+  _blockedCutoff: 1100
+  _occlusionSmoothTime: 0.2
+  _occlusionChecksPerFrame: 4
+  _occlusionMinDistance: 1.2

@@ -25,6 +25,19 @@ namespace DarkDepths.Audio
         [Tooltip("The player walks, nothing flies past: doppler only smears the pitch.")]
         [SerializeField, Range(0f, 1f)] private float _dopplerLevel;
 
+        [Header("Occlusion")]
+        [Tooltip("What counts as something to be heard through: walls and the leaf of a closed door.")]
+        [SerializeField] private LayerMask _occlusionMask;
+        [SerializeField, Range(1000f, 22000f)] private float _openCutoff = 22000f;
+        [Tooltip("docs/04 puts a muffled sound between 800 and 1500 Hz.")]
+        [SerializeField, Range(200f, 4000f)] private float _blockedCutoff = 1100f;
+        [Tooltip("Seconds to go from clear to muffled; a wall passed at a run must not click.")]
+        [SerializeField, Range(0.01f, 1f)] private float _occlusionSmoothTime = 0.2f;
+        [Tooltip("Rays a frame; the rest of the voices keep the answer they had.")]
+        [SerializeField, Range(1, 24)] private int _occlusionChecksPerFrame = 4;
+        [Tooltip("Metres below which a sound is treated as being on top of the listener.")]
+        [SerializeField, Min(0f)] private float _occlusionMinDistance = 1.2f;
+
         public AudioMixer Mixer => _mixer;
 
         public AudioMixerGroup MasterGroup => _masterGroup;
@@ -34,6 +47,18 @@ namespace DarkDepths.Audio
         public AudioRolloffMode Rolloff => _rolloff;
 
         public float DopplerLevel => _dopplerLevel;
+
+        public LayerMask OcclusionMask => _occlusionMask;
+
+        public float OpenCutoff => _openCutoff;
+
+        public float BlockedCutoff => _blockedCutoff;
+
+        public float OcclusionSmoothTime => _occlusionSmoothTime;
+
+        public int OcclusionChecksPerFrame => _occlusionChecksPerFrame;
+
+        public float OcclusionMinDistance => _occlusionMinDistance;
 
         public AudioMixerGroup GroupFor(AudioChannel channel)
         {

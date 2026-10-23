@@ -36,6 +36,9 @@ namespace DarkDepths.EditorTools
         [MenuItem("DarkDepths/Setup/Create Audio")]
         public static void CreateAudio()
         {
+            // The occlusion mask is built from layer names, so the layers have to exist first.
+            LayersSetup.CreateLayers();
+
             AudioMixer mixer = BuildMixer();
             AudioConfig config = LoadOrCreate<AudioConfig>(ConfigPath);
             WireConfig(config, mixer);
@@ -182,6 +185,11 @@ namespace DarkDepths.EditorTools
             SerializedWiring.Wire(config, "_ambientGroup", FindGroup(mixer, AmbientGroup));
             SerializedWiring.Wire(config, "_musicGroup", FindGroup(mixer, MusicGroup));
             SerializedWiring.Wire(config, "_uiGroup", FindGroup(mixer, UiGroup));
+
+            // What a sound has to be heard through: the walls of the building and the leaf of a shut door.
+            SerializedWiring.WireInt(config, "_occlusionMask",
+                (1 << LayerMask.NameToLayer("Wall")) | (1 << LayerMask.NameToLayer("Interactable")));
+
             EditorUtility.SetDirty(config);
         }
 

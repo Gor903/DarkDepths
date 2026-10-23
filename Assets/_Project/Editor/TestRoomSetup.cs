@@ -68,6 +68,7 @@ namespace DarkDepths.EditorTools
 
             // The room exists before it can be given a background, a door that creaks and pickups that rustle.
             RoomAudioSetup.CreateRoomAudio();
+            ReverbSetup.CreateReverb();
         }
 
         private static void BuildRoom(Transform parent, ModuleConfig modules)
