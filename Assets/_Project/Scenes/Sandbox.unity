@@ -2735,6 +2735,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6337037241487964089, guid: 72619f7f9ad1a8239bc6aea85fb5bae3, type: 3}
   m_PrefabInstance: {fileID: 1263107191}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1293311842
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1293311844}
+  - component: {fileID: 1293311843}
+  m_Layer: 0
+  m_Name: Audio
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1293311843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293311842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 379fc02cac4296a0fbd0e4d155e52b10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Audio::DarkDepths.Audio.AudioService
+  _config: {fileID: 11400000, guid: 0abcac0c8912822fe8d7f90c03c1c99d, type: 2}
+--- !u!4 &1293311844
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293311842}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1316661688
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4438,3 +4483,4 @@ SceneRoots:
   - {fileID: 1050107205}
   - {fileID: 1886148913}
   - {fileID: 1052546819}
+  - {fileID: 1293311844}

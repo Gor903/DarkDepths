@@ -9,6 +9,7 @@
 *.anim        merge=unityyamlmerge eol=lf
 *.controller  merge=unityyamlmerge eol=lf
 *.physicMaterial merge=unityyamlmerge eol=lf
+*.mixer       merge=unityyamlmerge eol=lf
 *.meta        merge=unityyamlmerge eol=lf
 
 # Binary assets via Git LFS: uncomment after `git lfs install`, before the first art or audio commit.

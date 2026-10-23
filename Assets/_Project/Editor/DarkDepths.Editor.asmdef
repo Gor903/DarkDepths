@@ -3,6 +3,7 @@
     "rootNamespace": "DarkDepths.EditorTools",
     "references": [
         "DarkDepths.Core",
+        "DarkDepths.Audio",
         "DarkDepths.World",
         "DarkDepths.Player",
         "Unity.InputSystem",

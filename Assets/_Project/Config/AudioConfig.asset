@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 485d25c075c74af21bc31cf9973aef8b, type: 3}
+  m_Name: AudioConfig
+  m_EditorClassIdentifier: DarkDepths.Audio::DarkDepths.Audio.AudioConfig
+  _mixer: {fileID: 24100000, guid: 5c1334ee6a0407cfabbb7878e6725e9b, type: 2}
+  _masterGroup: {fileID: 24300002, guid: 5c1334ee6a0407cfabbb7878e6725e9b, type: 2}
+  _sfxGroup: {fileID: -3863892132360585270, guid: 5c1334ee6a0407cfabbb7878e6725e9b, type: 2}
+  _ambientGroup: {fileID: 7446124780151934967, guid: 5c1334ee6a0407cfabbb7878e6725e9b, type: 2}
+  _musicGroup: {fileID: 6093367913892187403, guid: 5c1334ee6a0407cfabbb7878e6725e9b, type: 2}
+  _uiGroup: {fileID: -4147480317967992297, guid: 5c1334ee6a0407cfabbb7878e6725e9b, type: 2}
+  _voiceCount: 24
+  _rolloff: 0
+  _dopplerLevel: 0

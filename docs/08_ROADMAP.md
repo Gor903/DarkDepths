@@ -49,7 +49,7 @@
 
 **Зависимости:** этап 2. **Документы:** 04.
 
-- [ ] **T3.1** `AudioService`, Audio Mixer (Master/SFX/Ambient/Music/UI), пул источников.
+- [x] **T3.1** `AudioService`, Audio Mixer (Master/SFX/Ambient/Music/UI), пул источников.
 - [ ] **T3.2** Шаги игрока по поверхностям (`SurfaceType`).
 - [ ] **T3.3** Фон помещения, звуки дверей и предметов.
 - [ ] **T3.4** 3D-позиционирование, реверберация, low-pass окклюзия.
