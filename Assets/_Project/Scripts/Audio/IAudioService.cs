@@ -7,6 +7,9 @@ namespace DarkDepths.Audio
     {
         AudioHandle Play(AudioCue cue, Vector3 position);
 
+        // The same cue played softer: a crouched step is the same sound, not a different one.
+        AudioHandle Play(AudioCue cue, Vector3 position, float volumeScale);
+
         AudioHandle PlayAttached(AudioCue cue, Transform follow);
 
         bool IsPlaying(in AudioHandle handle);

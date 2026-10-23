@@ -26,5 +26,25 @@ namespace DarkDepths.EditorTools
             serialized.FindProperty(fieldName).stringValue = value;
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
+
+        public static void WireFloat(Object target, string fieldName, float value)
+        {
+            var serialized = new SerializedObject(target);
+            serialized.FindProperty(fieldName).floatValue = value;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        public static void WireArray(Object target, string fieldName, Object[] values)
+        {
+            var serialized = new SerializedObject(target);
+            SerializedProperty array = serialized.FindProperty(fieldName);
+            array.arraySize = values.Length;
+            for (int i = 0; i < values.Length; i++)
+            {
+                array.GetArrayElementAtIndex(i).objectReferenceValue = values[i];
+            }
+
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
     }
 }

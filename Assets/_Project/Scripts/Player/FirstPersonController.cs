@@ -21,6 +21,7 @@ namespace DarkDepths.Player
 
         public bool IsCrouching => _isCrouching;
         public bool IsSprinting { get; private set; }
+        public Gait CurrentGait => _isCrouching ? Gait.Crouch : IsSprinting ? Gait.Sprint : Gait.Walk;
         public float StaminaNormalized => _stamina.Normalized;
 
         private void Awake()

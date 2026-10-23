@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7624405907042684242}
   - component: {fileID: 3512655097276322727}
   - component: {fileID: 2946719159765942501}
+  - component: {fileID: 4047154185616500540}
   m_Layer: 10
   m_Name: Module_Floor
   m_TagString: Untagged
@@ -112,3 +113,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 0.2, z: 2}
   m_Center: {x: 0, y: -0.1, z: 0}
+--- !u!114 &4047154185616500540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379487575245777252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6527a8f2532a350c08b965c7aa6e1a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Noise::DarkDepths.Noise.Surface
+  _type: 0

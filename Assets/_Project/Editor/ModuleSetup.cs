@@ -1,5 +1,6 @@
 using System.IO;
 using DarkDepths.Core;
+using DarkDepths.Noise;
 using DarkDepths.World;
 using UnityEditor;
 using UnityEngine;
@@ -74,7 +75,10 @@ namespace DarkDepths.EditorTools
                 .Add(new Vector3(0f, -modules.DeckThickness * 0.5f, 0f),
                     new Vector3(modules.CellSize, modules.DeckThickness, modules.CellSize));
 
-            SaveModule(Floor, factory, material);
+            GameObject root = CreateRenderer(Floor, Floor, factory, material);
+            // What the player is walking on. Concrete by default; a room overrides it per tile.
+            root.AddComponent<Surface>();
+            SavePrefab(root);
         }
 
         private static void BuildCeiling(ModuleConfig modules, Material material)

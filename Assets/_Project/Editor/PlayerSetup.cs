@@ -27,6 +27,8 @@ namespace DarkDepths.EditorTools
             var actions = AssetDatabase.LoadAssetAtPath<InputActionAsset>(InputActionsSetup.AssetPath);
 
             GameObject prefab = BuildPrefab(movement, look, flashlight, actions);
+            // Rebuilding the prefab drops everything not created here, footsteps included.
+            FootstepSetup.CreateFootsteps();
             PlaceInSandbox(prefab);
 
             AssetDatabase.SaveAssets();

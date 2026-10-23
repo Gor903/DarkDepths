@@ -1,3 +1,4 @@
+using DarkDepths.Core;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -20,7 +21,12 @@ namespace DarkDepths.Audio
 
         public AudioHandle Play(AudioCue cue, Vector3 position)
         {
-            return PlayInternal(cue, position, null);
+            return PlayInternal(cue, position, null, 1f);
+        }
+
+        public AudioHandle Play(AudioCue cue, Vector3 position, float volumeScale)
+        {
+            return PlayInternal(cue, position, null, volumeScale);
         }
 
         public AudioHandle PlayAttached(AudioCue cue, Transform follow)
@@ -30,7 +36,7 @@ namespace DarkDepths.Audio
                 return AudioHandle.None;
             }
 
-            return PlayInternal(cue, follow.position, follow);
+            return PlayInternal(cue, follow.position, follow, 1f);
         }
 
         public bool IsPlaying(in AudioHandle handle)
@@ -92,6 +98,16 @@ namespace DarkDepths.Audio
             }
 
             BuildPool();
+            Services.Register<IAudioService>(this);
+        }
+
+        private void OnDestroy()
+        {
+            // A destroyed MonoBehaviour behind an interface no longer reads as null, so the slot is cleared here.
+            if (Services.Get<IAudioService>() == (IAudioService)this)
+            {
+                Services.Unregister<IAudioService>();
+            }
         }
 
         // Voices follow their source and free themselves here, so Play never has to sweep the pool.
@@ -153,7 +169,7 @@ namespace DarkDepths.Audio
             _allocator = new VoiceAllocator(count);
         }
 
-        private AudioHandle PlayInternal(AudioCue cue, Vector3 position, Transform follow)
+        private AudioHandle PlayInternal(AudioCue cue, Vector3 position, Transform follow, float volumeScale)
         {
             if (cue == null || _allocator == null)
             {
@@ -177,7 +193,7 @@ namespace DarkDepths.Audio
             source.Stop();
 
             source.clip = sample.Clip;
-            source.volume = sample.Volume;
+            source.volume = sample.Volume * Mathf.Clamp01(volumeScale);
             source.pitch = sample.Pitch;
             source.loop = cue.Loop;
             source.priority = cue.Priority;

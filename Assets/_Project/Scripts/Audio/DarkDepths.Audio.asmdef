@@ -1,7 +1,7 @@
 {
     "name": "DarkDepths.Audio",
     "rootNamespace": "DarkDepths.Audio",
-    "references": ["DarkDepths.Core"],
+    "references": ["DarkDepths.Core", "DarkDepths.Noise"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

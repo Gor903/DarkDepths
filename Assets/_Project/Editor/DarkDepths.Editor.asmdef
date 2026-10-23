@@ -4,6 +4,7 @@
     "references": [
         "DarkDepths.Core",
         "DarkDepths.Audio",
+        "DarkDepths.Noise",
         "DarkDepths.World",
         "DarkDepths.Player",
         "Unity.InputSystem",

@@ -313,6 +313,7 @@ GameObject:
   - component: {fileID: 2132872019784699300}
   - component: {fileID: 2242697744404602976}
   - component: {fileID: 1077742211072612833}
+  - component: {fileID: 2590369005137627892}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -412,3 +413,17 @@ MonoBehaviour:
   _interactableMask:
     serializedVersion: 2
     m_Bits: 3072
+--- !u!114 &2590369005137627892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6950857301761425500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ede8d3965e5f85cf8954825fa151210, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.FootstepPlayer
+  _config: {fileID: 11400000, guid: 47331711ebba60254a3668d592a11815, type: 2}
+  _controller: {fileID: 2242697744404602976}

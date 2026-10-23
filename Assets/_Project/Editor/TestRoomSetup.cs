@@ -1,5 +1,6 @@
 using DarkDepths.Core;
 using DarkDepths.Loot;
+using DarkDepths.Noise;
 using DarkDepths.World;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -104,7 +105,10 @@ namespace DarkDepths.EditorTools
             {
                 float z = start + cell * (i + 0.5f);
 
-                Place(ModuleSetup.Floor, parent, new Vector3(0f, 0f, z), 0f);
+                // The corridor is boarded over: a second surface, so the change of footstep is audible.
+                GameObject floor = Place(ModuleSetup.Floor, parent, new Vector3(0f, 0f, z), 0f);
+                SerializedWiring.WireInt(floor.GetComponent<Surface>(), "_type", (int)SurfaceType.Wood);
+
                 Place(ModuleSetup.Ceiling, parent, new Vector3(0f, 0f, z), 0f);
                 Place(ModuleSetup.Wall, parent, new Vector3(-wallX, 0f, z), 90f);
                 Place(ModuleSetup.Wall, parent, new Vector3(wallX, 0f, z), 90f);
