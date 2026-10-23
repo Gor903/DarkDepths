@@ -18,6 +18,11 @@ namespace DarkDepths.Core
         // How many enemies are currently chasing; the screen shows it, as docs/04 asks.
         bool IsHunted { get; }
 
+        bool IsHidden { get; }
+
+        // Cover from where this enemy stands: searching right beside it is what gives the player away.
+        bool IsConcealedFrom(Vector3 from, bool searching);
+
         event Action Died;
 
         void AddHunter();

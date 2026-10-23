@@ -27,6 +27,10 @@ namespace DarkDepths.World
         [SerializeField] private float _tableHeight = 0.75f;
         [SerializeField] private float _tableDepth = 0.8f;
         [SerializeField] private float _crateSize = 0.8f;
+        [Tooltip("The cupboard a player can stand inside; wide enough for one, deep enough to be out of view.")]
+        [SerializeField] private float _lockerWidth = 0.9f;
+        [SerializeField] private float _lockerHeight = 2f;
+        [SerializeField] private float _lockerDepth = 0.7f;
         [Tooltip("Thickness of boards and legs; the one number that keeps the furniture looking like a set.")]
         [SerializeField] private float _boardThickness = 0.08f;
 
@@ -46,6 +50,9 @@ namespace DarkDepths.World
         public float TableHeight => _tableHeight;
         public float TableDepth => _tableDepth;
         public float CrateSize => _crateSize;
+        public float LockerWidth => _lockerWidth;
+        public float LockerHeight => _lockerHeight;
+        public float LockerDepth => _lockerDepth;
         public float BoardThickness => _boardThickness;
 
         // A wall sits with its inner face on the room boundary, so the interior keeps its full size.

@@ -114,6 +114,10 @@ namespace DarkDepths.EditorTools
             // What the enemies reach the player through, and what runs out when they reach it.
             var health = root.AddComponent<PlayerHealth>();
             var target = root.AddComponent<PlayerTarget>();
+            var hiding = root.AddComponent<PlayerHiding>();
+            Wire(hiding, "_controller", fpc);
+            Wire(hiding, "_target", target);
+            Wire(interactor, "_hiding", hiding);
             Wire(target, "_health", health);
             Wire(target, "_flashlight", flashlight);
             Wire(target, "_eye", cameraGo.transform);

@@ -14,6 +14,8 @@ namespace DarkDepths.Player
         [Tooltip("Fallback sphere around the ray; a thumb-steered crosshair rarely lands dead centre.")]
         [SerializeField] private float _aimRadius = 0.12f;
         [SerializeField] private LayerMask _interactableMask;
+        [Tooltip("Optional: inside a hiding place the press belongs to leaving it, not to what is in view.")]
+        [SerializeField] private PlayerHiding _hiding;
 
         private readonly RaycastHit[] _hits = new RaycastHit[4];
         private Collider _resolvedCollider;
@@ -22,6 +24,17 @@ namespace DarkDepths.Player
 
         private void Update()
         {
+            if (_hiding != null && _hiding.IsHidden)
+            {
+                ShowPrompt(_hiding.LeavePrompt);
+                if (_input.ConsumeInteract())
+                {
+                    _hiding.Leave();
+                }
+
+                return;
+            }
+
             IInteractable target = FindTarget();
             bool available = target != null && target.CanInteract(gameObject);
 

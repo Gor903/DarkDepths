@@ -154,6 +154,9 @@ namespace DarkDepths.EditorTools
                 new Vector3(-half + modules.ShelfDepth * 0.5f, 0f, 0f), 90f);
             Place(ModuleSetup.Table, group.transform, new Vector3(1.4f, 0f, 0f), 0f);
             Place(ModuleSetup.Crate, group.transform, new Vector3(-1.2f, 0f, -2.2f), 25f);
+            // Against the east wall, opening into the room: cover you have to reach and then watch from.
+            Place(ModuleSetup.Locker, group.transform,
+                new Vector3(half - modules.LockerDepth * 0.5f, 0f, -1.6f), 270f);
         }
 
         private static void BuildPickups(Transform parent, Material material)

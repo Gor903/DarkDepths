@@ -16,6 +16,8 @@ namespace DarkDepths.Player
         [SerializeField] private Transform _eye;
 
         private int _hunters;
+        private Vector3 _cover;
+        private float _revealDistance;
 
         public event Action Died;
 
@@ -28,6 +30,26 @@ namespace DarkDepths.Player
         public bool IsLit => _flashlight != null && _flashlight.IsOn;
 
         public bool IsHunted => _hunters > 0;
+
+        public bool IsHidden { get; private set; }
+
+        // docs/05: cover holds until an enemy that is searching comes right up to it.
+        public bool IsConcealedFrom(Vector3 from, bool searching)
+        {
+            return IsHidden && Concealment.Hides(_cover, from, _revealDistance, searching);
+        }
+
+        public void Hide(Vector3 place, float revealDistance)
+        {
+            IsHidden = true;
+            _cover = place;
+            _revealDistance = revealDistance;
+        }
+
+        public void Reveal()
+        {
+            IsHidden = false;
+        }
 
         public void Damage(float amount)
         {
@@ -70,6 +92,7 @@ namespace DarkDepths.Player
         private void OnDied()
         {
             _hunters = 0;
+            IsHidden = false;
             Died?.Invoke();
         }
     }

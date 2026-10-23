@@ -187,7 +187,7 @@ MonoBehaviour:
   _input: {fileID: 2132872019784699300}
   _yawTarget: {fileID: 5331800196849381562}
   _controller: {fileID: 2242697744404602976}
-  _settings: {fileID: 11400000, guid: 4367490986531cb1fbfb1f8c2a198f09, type: 2}
+  _settings: {fileID: 0}
 --- !u!1 &6286143512067945318
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,9 +315,10 @@ GameObject:
   - component: {fileID: 1077742211072612833}
   - component: {fileID: 3785572999989791733}
   - component: {fileID: 1037844710433233126}
-  - component: {fileID: 5163221947547734175}
-  - component: {fileID: 1357215645775083834}
-  - component: {fileID: 2573260540077574337}
+  - component: {fileID: 3758042355211807271}
+  - component: {fileID: 7825007869473609184}
+  - component: {fileID: 5749797974866223268}
+  - component: {fileID: 6029603154052534631}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -381,7 +382,7 @@ MonoBehaviour:
   _actions: {fileID: -944628639613478452, guid: 249af3fad2140984988687cf957ef336, type: 3}
   _actionMapName: Player
   _touch: {fileID: 0}
-  _inputGate: {fileID: 11400000, guid: ab9b05f0ccfd236aebc3d8ca894f1d80, type: 2}
+  _inputGate: {fileID: 0}
 --- !u!114 &2242697744404602976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -417,6 +418,7 @@ MonoBehaviour:
   _interactableMask:
     serializedVersion: 2
     m_Bits: 3072
+  _hiding: {fileID: 3758042355211807271}
 --- !u!114 &3785572999989791733
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,7 +447,22 @@ MonoBehaviour:
   _health: {fileID: 3785572999989791733}
   _flashlight: {fileID: 5257364714298060252}
   _eye: {fileID: 8885969935047180923}
---- !u!114 &5163221947547734175
+--- !u!114 &3758042355211807271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6950857301761425500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cee53cf734cce79cb66469f8b7539eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.PlayerHiding
+  _controller: {fileID: 2242697744404602976}
+  _target: {fileID: 1037844710433233126}
+  _leavePrompt: Leave
+--- !u!114 &7825007869473609184
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -459,7 +476,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.FootstepPlayer
   _config: {fileID: 11400000, guid: 47331711ebba60254a3668d592a11815, type: 2}
   _controller: {fileID: 2242697744404602976}
---- !u!114 &1357215645775083834
+--- !u!114 &5749797974866223268
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -471,7 +488,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cb8a8611c863cba69bb4ec1bbcf154f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.FootstepNoise
---- !u!114 &2573260540077574337
+--- !u!114 &6029603154052534631
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

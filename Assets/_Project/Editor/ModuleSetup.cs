@@ -19,6 +19,7 @@ namespace DarkDepths.EditorTools
         public const string Shelf = "Module_Shelf";
         public const string Table = "Module_Table";
         public const string Crate = "Module_Crate";
+        public const string Locker = "Module_Locker";
 
         private const string ConfigFolder = "Assets/_Project/Config";
         private const string ConfigPath = ConfigFolder + "/ModuleConfig.asset";
@@ -46,6 +47,7 @@ namespace DarkDepths.EditorTools
             BuildShelf(modules, prop);
             BuildTable(modules, prop);
             BuildCrate(modules, prop);
+            BuildLocker(modules, prop);
 
             AssetDatabase.SaveAssets();
         }
@@ -202,6 +204,39 @@ namespace DarkDepths.EditorTools
                     new Vector3(modules.CrateSize + t, t, modules.CrateSize + t));
 
             SaveModule(Crate, factory, material);
+        }
+
+        // Open at the front, so whoever is inside looks out of it rather than at the back of a box.
+        private static void BuildLocker(ModuleConfig modules, Material material)
+        {
+            float t = modules.BoardThickness;
+            float width = modules.LockerWidth;
+            float height = modules.LockerHeight;
+            float depth = modules.LockerDepth;
+
+            var factory = new ModuleMeshFactory()
+                .Add(new Vector3(0f, height * 0.5f, (depth - t) * 0.5f), new Vector3(width, height, t))
+                .Add(new Vector3(-(width - t) * 0.5f, height * 0.5f, 0f), new Vector3(t, height, depth))
+                .Add(new Vector3((width - t) * 0.5f, height * 0.5f, 0f), new Vector3(t, height, depth))
+                .Add(new Vector3(0f, height - t * 0.5f, 0f), new Vector3(width, t, depth))
+                .Add(new Vector3(0f, t * 0.5f, 0f), new Vector3(width, t, depth));
+
+            GameObject root = CreateRenderer(Locker, Locker, factory, material);
+            // The way in is the only side without a panel; the interactor has to be able to hit it.
+            root.layer = LayerMask.NameToLayer("Interactable");
+            root.isStatic = false;
+
+            var anchor = new GameObject("Inside");
+            anchor.transform.SetParent(root.transform, false);
+            anchor.transform.localPosition = new Vector3(0f, 0f, -depth * 0.1f);
+            // Facing out of the opening: hiding must not mean staring at a back wall.
+            anchor.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+            TransformUtils.SetInspectorRotation(anchor.transform, new Vector3(0f, 180f, 0f));
+
+            var hideout = root.AddComponent<Hideout>();
+            SerializedWiring.Wire(hideout, "_anchor", anchor.transform);
+
+            SavePrefab(root);
         }
 
         private static void SaveModule(string moduleName, ModuleMeshFactory factory, Material material)

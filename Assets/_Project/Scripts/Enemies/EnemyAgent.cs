@@ -53,6 +53,12 @@ namespace DarkDepths.Enemies
                     return false;
                 }
 
+                // Someone in cover is not there at all, until this enemy is searching and standing on it.
+                if (_target.IsConcealedFrom(transform.position, State == EnemyStateId.Search))
+                {
+                    return false;
+                }
+
                 float range = SightCheck.RangeFor(_definition.SightRange, _definition.LightSensitivity,
                     _target.IsLit);
                 Vector3 eye = transform.position + Vector3.up * _eyeHeight;
