@@ -63,7 +63,7 @@
 
 - [x] **T4.1** `NoiseSystem`, `NoiseEvent`, `INoiseListener`, `NoiseConfig` + EditMode-тесты + Gizmos.
 - [x] **T4.2** Игрок и объекты излучают шум (шаги, двери, падение предметов).
-- [ ] **T4.3** `EnemyDefinition`, FSM-каркас, NavMesh, состояния Patrol/Alerted/Investigate/Search/Return.
+- [x] **T4.3** `EnemyDefinition`, FSM-каркас, NavMesh, состояния Patrol/Alerted/Investigate/Search/Return.
 - [ ] **T4.4** Chase + Attack, урон игроку, смерть игрока.
 - [ ] **T4.5** Бросаемый предмет для отвлечения.
 - [ ] **T4.6** Укрытия.

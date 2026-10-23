@@ -1,4 +1,5 @@
 using DarkDepths.Core;
+using DarkDepths.Enemies;
 using DarkDepths.Loot;
 using DarkDepths.Noise;
 using DarkDepths.World;
@@ -21,6 +22,13 @@ namespace DarkDepths.EditorTools
         // Down the corridor, facing the door: the one spot where the silhouette is read against an empty wall.
         private static readonly Vector3 EnemyPosition = new Vector3(0f, 0f, 5f);
         private const float EnemyYaw = 180f;
+
+        // The route runs the length of the corridor and into the room, so the patrol crosses the doorway.
+        private static readonly Vector3[] PatrolPositions =
+        {
+            new Vector3(0f, 0f, 8f),
+            new Vector3(0f, 0f, -1.5f)
+        };
 
         private static readonly string[] PickupNames = { "Battery", "Medkit", "Bottle", "Baton", "Loot" };
 
@@ -69,6 +77,10 @@ namespace DarkDepths.EditorTools
             // The room exists before it can be given a background, a door that creaks and pickups that rustle.
             RoomAudioSetup.CreateRoomAudio();
             ReverbSetup.CreateReverb();
+            // The kit is rebuilt from scratch above, so the door gets its ear back here, not before.
+            NoiseSetup.CreateNoise();
+            // Last: the ground the enemies walk on is baked from the room that now exists.
+            NavigationSetup.CreateNavigation();
         }
 
         private static void BuildRoom(Transform parent, ModuleConfig modules)
@@ -166,6 +178,20 @@ namespace DarkDepths.EditorTools
             instance.transform.localPosition = EnemyPosition;
             instance.transform.localRotation = Quaternion.Euler(0f, EnemyYaw, 0f);
             TransformUtils.SetInspectorRotation(instance.transform, new Vector3(0f, EnemyYaw, 0f));
+
+            var route = new GameObject("PatrolPoints");
+            route.transform.SetParent(parent, false);
+
+            var points = new Object[PatrolPositions.Length];
+            for (int i = 0; i < PatrolPositions.Length; i++)
+            {
+                var point = new GameObject("Point_" + (i + 1).ToString("00"));
+                point.transform.SetParent(route.transform, false);
+                point.transform.localPosition = PatrolPositions[i];
+                points[i] = point.transform;
+            }
+
+            SerializedWiring.WireArray(instance.GetComponent<EnemyAgent>(), "_patrolPoints", points);
         }
 
         // Cell index to a position along a row centred on the origin.

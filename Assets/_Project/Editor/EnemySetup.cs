@@ -4,6 +4,7 @@ using DarkDepths.Enemies;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace DarkDepths.EditorTools
 {
@@ -14,6 +15,7 @@ namespace DarkDepths.EditorTools
 
         private const string ConfigFolder = "Assets/_Project/Config";
         private const string ConfigPath = ConfigFolder + "/SilhouetteConfig.asset";
+        private const string DefinitionPath = ConfigFolder + "/ListenerDefinition.asset";
         private const string PrefabFolder = "Assets/_Project/Prefabs/Enemies";
         private const string AnimationFolder = "Assets/_Project/Art/Animation";
         private const string MeshName = "Silhouette_Listener";
@@ -36,8 +38,10 @@ namespace DarkDepths.EditorTools
 
             var rig = new SilhouetteRig(config.CreateProportions());
 
+            EnemyDefinition definition = LoadOrCreateDefinition();
+
             Directory.CreateDirectory(PrefabFolder);
-            GameObject root = BuildListener(config, rig, material);
+            GameObject root = BuildListener(config, rig, material, definition);
             PrefabUtility.SaveAsPrefabAsset(root, PrefabFolder + "/" + Listener + ".prefab");
             Object.DestroyImmediate(root);
 
@@ -58,12 +62,28 @@ namespace DarkDepths.EditorTools
             return created;
         }
 
+        public static EnemyDefinition LoadOrCreateDefinition()
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<EnemyDefinition>(DefinitionPath);
+            if (existing != null)
+            {
+                return existing;
+            }
+
+            Directory.CreateDirectory(ConfigFolder);
+            // The field defaults are the Listener's starting values from docs/05.
+            var created = ScriptableObject.CreateInstance<EnemyDefinition>();
+            AssetDatabase.CreateAsset(created, DefinitionPath);
+            return created;
+        }
+
         public static GameObject LoadListener()
         {
             return AssetDatabase.LoadAssetAtPath<GameObject>(PrefabFolder + "/" + Listener + ".prefab");
         }
 
-        private static GameObject BuildListener(SilhouetteConfig config, SilhouetteRig rig, Material material)
+        private static GameObject BuildListener(SilhouetteConfig config, SilhouetteRig rig, Material material,
+            EnemyDefinition definition)
         {
             var root = new GameObject(Listener, typeof(Animator), typeof(SilhouetteAnimator));
             root.layer = LayerMask.NameToLayer("Enemy");
@@ -78,7 +98,26 @@ namespace DarkDepths.EditorTools
             animator.cullingMode = AnimatorCullingMode.CullUpdateTransforms;
 
             SerializedWiring.Wire(root.GetComponent<SilhouetteAnimator>(), "_animator", animator);
+
+            BuildNavigation(root, rig);
+            var brain = root.AddComponent<EnemyAgent>();
+            SerializedWiring.Wire(brain, "_definition", definition);
+            SerializedWiring.Wire(brain, "_animator", root.GetComponent<SilhouetteAnimator>());
+
             return root;
+        }
+
+        // Slimmer than the baked agent radius: the silhouette has to fit a two-metre corridor beside a wall.
+        private static void BuildNavigation(GameObject root, SilhouetteRig rig)
+        {
+            var agent = root.AddComponent<NavMeshAgent>();
+            agent.radius = 0.3f;
+            agent.height = rig.Height;
+            agent.baseOffset = 0f;
+            agent.angularSpeed = 240f;
+            agent.acceleration = 8f;
+            agent.stoppingDistance = 0.2f;
+            agent.autoBraking = true;
         }
 
         private static Transform[] BuildBones(Transform root, SilhouetteRig rig)

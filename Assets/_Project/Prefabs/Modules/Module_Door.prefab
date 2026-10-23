@@ -122,8 +122,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6486833554555201283}
   - component: {fileID: 7435954455264582611}
-  - component: {fileID: 7778322561132279692}
-  - component: {fileID: 671938841925666259}
+  - component: {fileID: 1914146733728016734}
+  - component: {fileID: 1280063397785481482}
   m_Layer: 0
   m_Name: Module_Door
   m_TagString: Untagged
@@ -170,7 +170,7 @@ MonoBehaviour:
   _sweepMargin: 0.08
   _openPrompt: Open
   _closePrompt: Close
---- !u!114 &7778322561132279692
+--- !u!114 &1914146733728016734
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -186,7 +186,7 @@ MonoBehaviour:
   _closeCue: {fileID: 11400000, guid: 60af72bc1d02a94548e5ea41644089d9, type: 2}
   _latchCue: {fileID: 11400000, guid: 2bdd9c14157a4612eb63af96636aaabe, type: 2}
   _source: {fileID: 2434283600214656683}
---- !u!114 &671938841925666259
+--- !u!114 &1280063397785481482
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
