@@ -31,6 +31,16 @@ namespace DarkDepths.Noise
             _listeners.Remove(listener);
         }
 
+        public void Emit(NoiseSound sound, Vector3 position, NoiseType type, GameObject source, float scale)
+        {
+            if (_config == null)
+            {
+                return;
+            }
+
+            Emit(new NoiseEvent(position, _config.LoudnessOf(sound) * Mathf.Max(0f, scale), type, source));
+        }
+
         public void Emit(in NoiseEvent noise)
         {
             if (_config == null || noise.Loudness <= 0f)

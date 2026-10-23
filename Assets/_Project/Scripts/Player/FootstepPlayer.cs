@@ -1,3 +1,4 @@
+using System;
 using DarkDepths.Audio;
 using DarkDepths.Core;
 using DarkDepths.Noise;
@@ -15,6 +16,10 @@ namespace DarkDepths.Player
         private CharacterController _body;
         private StrideMeter _meter;
         private IAudioService _audio;
+
+        // Where the foot landed and how it was moving; what the player hears and what the building
+        // hears come off the same step.
+        public event Action<Vector3, Gait> Stepped;
 
         private void Awake()
         {
@@ -85,6 +90,9 @@ namespace DarkDepths.Player
             {
                 _audio.Play(cue, foot, _config.VolumeFor(gait));
             }
+
+            // A step with no cue is still a step: it is heard whether or not the player hears it.
+            Stepped?.Invoke(foot, gait);
         }
     }
 }

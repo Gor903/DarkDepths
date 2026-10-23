@@ -314,6 +314,7 @@ GameObject:
   - component: {fileID: 2242697744404602976}
   - component: {fileID: 1077742211072612833}
   - component: {fileID: 2590369005137627892}
+  - component: {fileID: 5916965693415518064}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -427,3 +428,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.FootstepPlayer
   _config: {fileID: 11400000, guid: 47331711ebba60254a3668d592a11815, type: 2}
   _controller: {fileID: 2242697744404602976}
+--- !u!114 &5916965693415518064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6950857301761425500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cb8a8611c863cba69bb4ec1bbcf154f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.FootstepNoise
