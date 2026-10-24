@@ -84,8 +84,8 @@ namespace DarkDepths.EditorTools
             {
                 material.EnableKeyword("_EMISSION");
                 material.SetColor("_EmissionColor", palette.Emission);
-                // Nothing is baked, so the emission is a surface that glows and lights nothing around it.
-                material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+                // Nothing is baked, and the flag cannot be None: URP strips the _EMISSION keyword without it.
+                material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
             }
             else
             {
