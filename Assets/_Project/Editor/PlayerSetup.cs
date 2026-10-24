@@ -99,6 +99,8 @@ namespace DarkDepths.EditorTools
 
             Wire(flashlight, "_config", flashlightConfig);
             Wire(flashlight, "_input", reader);
+            // What the beam's walking bob is scaled by.
+            Wire(flashlight, "_controller", fpc);
             flashlight.ApplyBeamSettings();
             flashlightGo.GetComponent<Light>().enabled = false;
 

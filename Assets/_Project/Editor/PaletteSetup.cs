@@ -29,6 +29,9 @@ namespace DarkDepths.EditorTools
                 MaterialFor(role, palette);
             }
 
+            // The floor is the only surface with a second finish, and the kit has to find it already updated.
+            MaterialFor(PaletteRole.Structure, palette, SurfaceFinish.Floor);
+
             ApplyShadowDistance(palette);
             ApplyPlayerCamera(palette);
             ApplySceneLighting(palette);
@@ -51,11 +54,13 @@ namespace DarkDepths.EditorTools
         }
 
         // Re-applies the palette onto the material that is already there, so scene references survive a re-run.
-        public static Material MaterialFor(PaletteRole role, PaletteConfig palette = null)
+        public static Material MaterialFor(PaletteRole role, PaletteConfig palette = null,
+            SurfaceFinish finish = SurfaceFinish.Wall)
         {
             palette = palette != null ? palette : LoadOrCreateConfig();
 
-            string path = MaterialFolder + "/" + MaterialPrefix + role + ".mat";
+            string suffix = finish == SurfaceFinish.Wall ? string.Empty : "_" + finish;
+            string path = MaterialFolder + "/" + MaterialPrefix + role + suffix + ".mat";
             var material = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (material == null)
             {
@@ -67,8 +72,11 @@ namespace DarkDepths.EditorTools
             Color color = palette.Resolve(role);
             material.color = color;
             material.SetColor("_BaseColor", color);
-            material.SetFloat("_Smoothness", palette.Smoothness);
+            material.SetFloat("_Smoothness", palette.SmoothnessFor(finish));
             material.SetFloat("_Metallic", palette.Metallic);
+            // Reflections would light the surface from everywhere at once, which is the opposite of one torch.
+            material.SetFloat("_EnvironmentReflections", 0f);
+            material.EnableKeyword("_ENVIRONMENTREFLECTIONS_OFF");
 
             // Only lamps and valuables glow; everything else has to be lit to be seen.
             bool emissive = role == PaletteRole.Lamp;
@@ -76,7 +84,8 @@ namespace DarkDepths.EditorTools
             {
                 material.EnableKeyword("_EMISSION");
                 material.SetColor("_EmissionColor", palette.Emission);
-                material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.BakedEmissive;
+                // Nothing is baked, so the emission is a surface that glows and lights nothing around it.
+                material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
             }
             else
             {
@@ -112,19 +121,25 @@ namespace DarkDepths.EditorTools
             RenderSettings.ambientLight = palette.AmbientLight;
             RenderSettings.skybox = null;
 
+            // A reflection probe lights every surface from every side at once and undoes the dark.
+            RenderSettings.defaultReflectionMode = DefaultReflectionMode.Custom;
+            RenderSettings.customReflectionTexture = null;
+            RenderSettings.reflectionIntensity = 0f;
+
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = palette.Background;
+            RenderSettings.fogColor = palette.FogColor;
             RenderSettings.fogStartDistance = palette.FogStartDistance;
             RenderSettings.fogEndDistance = palette.FogEndDistance;
 
-            // The directional light is a fill that keeps wall edges readable; the flashlight stays the only real source.
+            // The fill is off by default: it lit one side of every room evenly and took the dark with it.
             var fill = UnityEngine.Object.FindAnyObjectByType<Light>();
             if (fill != null && fill.type == LightType.Directional)
             {
                 fill.color = palette.Background;
                 fill.intensity = palette.FillLightIntensity;
                 fill.shadows = LightShadows.None;
+                fill.enabled = palette.FillLightIntensity > 0f;
             }
         }
 
@@ -152,13 +167,13 @@ namespace DarkDepths.EditorTools
             // Every quality level, not just the active one: which level batchmode picks is not ours to guess.
             for (int i = 0; i < QualitySettings.names.Length; i++)
             {
-                WriteShadowDistance(QualitySettings.GetRenderPipelineAssetAt(i), palette.ShadowDistance);
+                WriteShadowSettings(QualitySettings.GetRenderPipelineAssetAt(i), palette);
             }
 
-            WriteShadowDistance(GraphicsSettings.defaultRenderPipeline, palette.ShadowDistance);
+            WriteShadowSettings(GraphicsSettings.defaultRenderPipeline, palette);
         }
 
-        private static void WriteShadowDistance(RenderPipelineAsset pipeline, float distance)
+        private static void WriteShadowSettings(RenderPipelineAsset pipeline, PaletteConfig palette)
         {
             if (pipeline == null)
             {
@@ -166,15 +181,30 @@ namespace DarkDepths.EditorTools
             }
 
             var serialized = new SerializedObject(pipeline);
-            SerializedProperty property = serialized.FindProperty("m_ShadowDistance");
-            if (property == null || Mathf.Approximately(property.floatValue, distance))
+            bool changed = WriteFloat(serialized, "m_ShadowDistance", palette.ShadowDistance);
+            // Bias is what the flashlight is tuned against: acne on the walls against light under the doors.
+            changed |= WriteFloat(serialized, "m_ShadowDepthBias", palette.ShadowDepthBias);
+            changed |= WriteFloat(serialized, "m_ShadowNormalBias", palette.ShadowNormalBias);
+
+            if (!changed)
             {
                 return;
             }
 
-            property.floatValue = distance;
             serialized.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(pipeline);
+        }
+
+        private static bool WriteFloat(SerializedObject serialized, string path, float value)
+        {
+            SerializedProperty property = serialized.FindProperty(path);
+            if (property == null || Mathf.Approximately(property.floatValue, value))
+            {
+                return false;
+            }
+
+            property.floatValue = value;
+            return true;
         }
     }
 }

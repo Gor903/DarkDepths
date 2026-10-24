@@ -20,7 +20,9 @@ MonoBehaviour:
   _standingEyeHeight: 1.65
   _crouchEyeHeight: 1
   _radius: 0.3
-  _crouchTransitionSpeed: 6
+  _acceleration: 24
+  _deceleration: 30
+  _crouchTransitionTime: 0.16
   _sprintDuration: 5
   _sprintRecovery: 8
   _sprintRearmThreshold: 0.2

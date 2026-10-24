@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: PlayerLookConfig
   m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.PlayerLookConfig
   _fieldOfView: 70
+  _nearClipPlane: 0.05
+  _sprintFieldOfViewBoost: 5
+  _fieldOfViewTransition: 0.18
   _lookSensitivity: 0.12
+  _lookSmoothing: 0.045
   _invertY: 0
   _minPitch: -85
   _maxPitch: 85

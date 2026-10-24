@@ -26,4 +26,7 @@ MonoBehaviour:
   _tableHeight: 0.75
   _tableDepth: 0.8
   _crateSize: 0.8
+  _lockerWidth: 0.9
+  _lockerHeight: 2
+  _lockerDepth: 0.7
   _boardThickness: 0.08

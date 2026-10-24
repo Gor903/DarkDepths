@@ -16,5 +16,9 @@ MonoBehaviour:
   _joystickDeadZone: 0.15
   _buttonSize: 160
   _buttonMargin: 48
+  _sprintEngageThreshold: 0.9
+  _sprintReleaseThreshold: 0.55
+  _handleColor: {r: 1, g: 1, b: 1, a: 0.32}
+  _handleSprintColor: {r: 1, g: 1, b: 1, a: 0.8}
   _lookSensitivityScale: 1
   _leftHanded: 0

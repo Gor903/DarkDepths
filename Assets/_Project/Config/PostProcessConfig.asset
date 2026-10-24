@@ -12,11 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 717acfae6ab1db9028cbb7092cd7150b, type: 3}
   m_Name: PostProcessConfig
   m_EditorClassIdentifier: DarkDepths.Core::DarkDepths.Core.PostProcessConfig
-  _vignetteIntensity: 0.28
-  _vignetteSmoothness: 0.4
-  _grainIntensity: 0.18
+  _saturation: -20
+  _contrast: 10
+  _postExposure: -0.3
+  _vignetteIntensity: 0.3
+  _vignetteSmoothness: 0.45
+  _grainIntensity: 0.12
   _grainResponse: 0.8
   _bloomThreshold: 1.1
-  _bloomIntensity: 0.6
+  _bloomIntensity: 0.35
   _bloomScatter: 0.6
   _reducedScale: 0

@@ -7,10 +7,15 @@ namespace DarkDepths.Player
     {
         [SerializeField] private FlashlightConfig _config;
         [SerializeField] private PlayerInputReader _input;
+        [Tooltip("What the walking bob is driven by; found up the hierarchy when it is left empty.")]
+        [SerializeField] private FirstPersonController _controller;
 
         private Light _light;
         private Transform _mount;
         private Battery _battery;
+        private BeamSway _sway;
+        private Quaternion _beamRotation;
+        private Quaternion _lastViewRotation;
         private bool _isOn;
         private float _flickerPhase;
 
@@ -41,13 +46,26 @@ namespace DarkDepths.Player
             _light.shadows = LightShadows.Soft;
             _light.shadowStrength = _config.ShadowStrength;
             _light.shadowNearPlane = _config.ShadowNearPlane;
+
+            // Held beside the eye rather than at it: that offset is what gives door frames a shadow to cast.
+            transform.localPosition = _config.HandOffset;
+            transform.localRotation = _config.BeamRotation;
         }
 
         private void Awake()
         {
             _light = GetComponent<Light>();
             _mount = transform.parent;
+            // A prefab built before the bob existed has nothing wired, and the torch is always under the player.
+            if (_controller == null)
+            {
+                _controller = GetComponentInParent<FirstPersonController>();
+            }
+
             _battery = new Battery(_config.BatteryCapacity, _config.DrainPerSecond);
+            _sway = _config.CreateSway();
+            _beamRotation = _config.BeamRotation;
+            _lastViewRotation = _mount != null ? _mount.rotation : transform.rotation;
             ApplyBeamSettings();
             SetOn(false);
         }
@@ -77,15 +95,38 @@ namespace DarkDepths.Player
         // The beam trails the view by a few hundredths of a second, which is what sells a hand-held torch.
         private void LateUpdate()
         {
-            if (_mount == null || _config.SwayTime <= 0f)
+            if (_mount == null)
             {
                 return;
             }
 
+            Vector2 offset = _sway.Advance(ViewDelta(), Stride(), Time.deltaTime);
+            transform.localRotation = Quaternion.Euler(offset.x, offset.y, 0f) * _beamRotation;
+        }
+
+        // How far the view turned since the last frame, pitch in x and yaw in y, wrapped to a signed angle.
+        private Vector2 ViewDelta()
+        {
             Quaternion view = _mount.rotation;
-            Quaternion trailing = Quaternion.Slerp(transform.rotation, view,
-                1f - Mathf.Exp(-Time.deltaTime / _config.SwayTime));
-            transform.rotation = Quaternion.RotateTowards(view, trailing, _config.MaxSwayAngle);
+            Vector3 delta = (Quaternion.Inverse(_lastViewRotation) * view).eulerAngles;
+            _lastViewRotation = view;
+
+            return new Vector2(Wrap(delta.x), Wrap(delta.y));
+        }
+
+        private static float Wrap(float angle)
+        {
+            return angle > 180f ? angle - 360f : angle;
+        }
+
+        private float Stride()
+        {
+            if (_controller == null || _config.BobReferenceSpeed <= 0f)
+            {
+                return 0f;
+            }
+
+            return Mathf.Clamp01(_controller.HorizontalSpeed / _config.BobReferenceSpeed);
         }
 
         private float CurrentIntensity(float deltaTime)
@@ -103,7 +144,19 @@ namespace DarkDepths.Player
 
             _flickerPhase += deltaTime * _config.FlickerSpeed;
             float wobble = 1f - _config.FlickerAmplitude * (1f - Mathf.Cos(_flickerPhase)) * 0.5f;
-            return intensity * wobble;
+            return intensity * wobble * Noise();
+        }
+
+        // Breaks up the regularity of the wobble; at amplitude 0 it costs one multiply and changes nothing.
+        private float Noise()
+        {
+            if (_config.FlickerNoiseAmplitude <= 0f)
+            {
+                return 1f;
+            }
+
+            float noise = Mathf.PerlinNoise(_flickerPhase * _config.FlickerNoiseScale, 0f);
+            return 1f - _config.FlickerNoiseAmplitude * (1f - noise);
         }
 
         // Toggling is instant: no flash-up animation, per docs/03_PLAYER_AND_CONTROLS.md.

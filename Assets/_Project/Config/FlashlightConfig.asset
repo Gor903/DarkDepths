@@ -13,12 +13,27 @@ MonoBehaviour:
   m_Name: FlashlightConfig
   m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.FlashlightConfig
   _intensity: 3
-  _range: 14
-  _spotAngle: 55
-  _innerSpotAngle: 32
+  _range: 12
+  _spotAngle: 45
+  _innerSpotAngle: 22
+  _color: {r: 0.961, g: 0.945, b: 0.898, a: 1}
+  _handOffset: {x: 0.18, y: -0.15, z: 0.1}
+  _convergenceDistance: 7
+  _shadowStrength: 1
+  _shadowNearPlane: 0.08
+  _swayTime: 0.12
+  _swayDamping: 0.7
+  _maxSwayAngle: 6
+  _breathAmplitude: 0.3
+  _breathSpeed: 1.1
+  _bobAmplitude: 0.6
+  _bobSpeed: 8
+  _bobReferenceSpeed: 2.6
   _batteryCapacity: 120
   _drainPerSecond: 1
   _lowBatteryThreshold: 0.2
   _lowBatteryMinFactor: 0.35
   _flickerSpeed: 2.5
   _flickerAmplitude: 0.22
+  _flickerNoiseAmplitude: 0
+  _flickerNoiseScale: 1.7

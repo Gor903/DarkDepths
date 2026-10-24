@@ -18,11 +18,15 @@ MonoBehaviour:
   _lamp: {r: 0.9098039, g: 0.8509804, b: 0.627451, a: 1}
   _danger: {r: 0.54901963, g: 0.16470589, b: 0.16470589, a: 1}
   _enemy: {r: 0.019607844, g: 0.023529412, b: 0.03137255, a: 1}
-  _smoothness: 0.05
+  _wallSmoothness: 0.15
+  _floorSmoothness: 0.35
   _metallic: 0
   _lampEmission: 2.5
-  _ambientIntensity: 0.18
-  _fillLightIntensity: 0.05
-  _fogStartDistance: 6
-  _fogEndDistance: 28
-  _shadowDistance: 30
+  _ambientIntensity: 0.07
+  _fillLightIntensity: 0
+  _shadowDepthBias: 1
+  _shadowNormalBias: 1
+  _fogStartDistance: 3
+  _fogEndDistance: 18
+  _fogIntensity: 0.05
+  _shadowDistance: 20

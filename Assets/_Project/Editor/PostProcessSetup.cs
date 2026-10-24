@@ -73,6 +73,15 @@ namespace DarkDepths.EditorTools
                 AssetDatabase.CreateAsset(profile, ProfilePath);
             }
 
+            // First in the stack and the reason the rest can be judged: without it the beam centre clips to white.
+            Tonemapping tonemapping = GetOrAdd<Tonemapping>(profile);
+            tonemapping.mode.Override(TonemappingMode.Neutral);
+
+            ColorAdjustments grading = GetOrAdd<ColorAdjustments>(profile);
+            grading.postExposure.Override(config.PostExposure);
+            grading.contrast.Override(config.Contrast);
+            grading.saturation.Override(config.Saturation);
+
             Vignette vignette = GetOrAdd<Vignette>(profile);
             vignette.intensity.Override(config.VignetteIntensity);
             vignette.smoothness.Override(config.VignetteSmoothness);

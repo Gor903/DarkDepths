@@ -16,6 +16,8 @@ namespace DarkDepths.UI
         private Vignette _vignette;
         private FilmGrain _grain;
         private Bloom _bloom;
+        private Tonemapping _tonemapping;
+        private ColorAdjustments _grading;
 
         private void Awake()
         {
@@ -29,6 +31,8 @@ namespace DarkDepths.UI
             profile.TryGet(out _vignette);
             profile.TryGet(out _grain);
             profile.TryGet(out _bloom);
+            profile.TryGet(out _tonemapping);
+            profile.TryGet(out _grading);
         }
 
         private void OnEnable()
@@ -45,6 +49,14 @@ namespace DarkDepths.UI
         private void Apply()
         {
             PostProcessBudget budget = _config.CreateBudget(_settings.ReduceEffects);
+
+            // Grading is not an effect the player can turn down: it is how the image is exposed.
+            if (_grading != null)
+            {
+                _grading.postExposure.value = _config.PostExposure;
+                _grading.contrast.value = _config.Contrast;
+                _grading.saturation.value = _config.Saturation;
+            }
 
             if (_vignette != null)
             {
@@ -68,8 +80,9 @@ namespace DarkDepths.UI
                 _bloom.active = budget.BloomActive;
             }
 
-            // With nothing left to render the whole stack is skipped rather than run at zero strength.
-            _volume.enabled = budget.AnyActive;
+            // With nothing left to render the whole stack is skipped rather than run at zero strength;
+            // tone mapping and grading are the exception, because without them the beam clips to white.
+            _volume.enabled = budget.AnyActive || _tonemapping != null || _grading != null;
         }
     }
 }

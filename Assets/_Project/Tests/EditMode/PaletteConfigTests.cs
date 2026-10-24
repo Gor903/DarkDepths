@@ -80,10 +80,35 @@ namespace DarkDepths.Tests.EditMode
         }
 
         [Test]
-        public void SurfacesStayMatte()
+        public void WallsStayMatte()
         {
-            Assert.LessOrEqual(_palette.Smoothness, 0.2f);
+            // docs/10_LIGHTING.md: walls 0.1-0.2, or a highlight travels the wall as a second light source.
+            Assert.LessOrEqual(_palette.SmoothnessFor(SurfaceFinish.Wall), 0.2f);
             Assert.AreEqual(0f, _palette.Metallic, Tolerance);
+        }
+
+        [Test]
+        public void TheFloorCatchesMoreOfTheBeamThanTheWalls()
+        {
+            float floor = _palette.SmoothnessFor(SurfaceFinish.Floor);
+
+            Assert.Greater(floor, _palette.SmoothnessFor(SurfaceFinish.Wall));
+            Assert.LessOrEqual(floor, 0.5f);
+        }
+
+        [Test]
+        public void FogSitsBelowTheAmbientLift()
+        {
+            // A fog brighter than the ambient would read as a lit wall at the edge of sight.
+            Assert.LessOrEqual(_palette.FogColor.b, _palette.AmbientLight.b);
+            Assert.AreEqual(1f, _palette.FogColor.a, Tolerance);
+        }
+
+        [Test]
+        public void AmbientLeavesTheRoomDark()
+        {
+            // docs/10_LIGHTING.md caps the lift at a tenth of the background; above that the dark is gone.
+            Assert.Less(_palette.AmbientLight.b, _palette.Background.b * 0.1f);
         }
 
         [Test]

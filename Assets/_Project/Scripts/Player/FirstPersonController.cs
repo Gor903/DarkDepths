@@ -20,6 +20,8 @@ namespace DarkDepths.Player
         private float _eyeVelocity;
 
         public bool IsCrouching => _isCrouching;
+        // What the flashlight bob is scaled by; the vertical component is gravity, not walking.
+        public float HorizontalSpeed => _horizontalVelocity.magnitude;
         public bool IsSprinting { get; private set; }
         public Gait CurrentGait => _isCrouching ? Gait.Crouch : IsSprinting ? Gait.Sprint : Gait.Walk;
         public float StaminaNormalized => _stamina.Normalized;

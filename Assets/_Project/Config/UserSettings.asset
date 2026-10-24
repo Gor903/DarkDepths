@@ -18,3 +18,8 @@ MonoBehaviour:
   _brightnessMin: 0.7
   _brightnessMax: 1.5
   _brightnessDefault: 1
+  _reduceEffectsDefault: 0
+  _sfxVolumeDefault: 1
+  _ambientVolumeDefault: 1
+  _musicVolumeDefault: 1
+  _soundHintsDefault: 1

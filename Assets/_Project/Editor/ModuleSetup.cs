@@ -36,10 +36,12 @@ namespace DarkDepths.EditorTools
             PaletteConfig palette = PaletteSetup.LoadOrCreateConfig();
             Material structure = PaletteSetup.MaterialFor(PaletteRole.Structure, palette);
             Material prop = PaletteSetup.MaterialFor(PaletteRole.Prop, palette);
+            // The floor keeps the same colour as the walls and only differs in how much of the beam it returns.
+            Material deck = PaletteSetup.MaterialFor(PaletteRole.Structure, palette, SurfaceFinish.Floor);
 
             Directory.CreateDirectory(PrefabFolder);
 
-            BuildFloor(modules, structure);
+            BuildFloor(modules, deck);
             BuildCeiling(modules, structure);
             BuildWall(modules, structure);
             BuildWallDoorway(modules, structure);
