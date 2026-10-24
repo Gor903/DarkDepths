@@ -59,6 +59,7 @@ namespace DarkDepths.EditorTools
 
             Viewpoint room = Viewpoints[0];
             camera.transform.SetPositionAndRotation(room.Eye, Quaternion.Euler(room.Pitch, room.Yaw, 0f));
+            WarmUp(camera, target);
 
             foreach (float intensity in Intensities)
             {
@@ -99,6 +100,8 @@ namespace DarkDepths.EditorTools
             var target = new RenderTexture(Width, Height, 24, RenderTextureFormat.ARGB32,
                 RenderTextureReadWrite.sRGB);
 
+            WarmUp(camera, target);
+
             foreach (Viewpoint viewpoint in Viewpoints)
             {
                 camera.transform.SetPositionAndRotation(viewpoint.Eye,
@@ -114,6 +117,15 @@ namespace DarkDepths.EditorTools
 
             // The scene is never saved: the shot rig is a visitor, not a change to the sandbox.
             Debug.Log("Lighting shots written to " + Path.GetFullPath(ShotFolder));
+        }
+
+        // The first frame of a batchmode session renders before the post stack and the emissive keywords
+        // are live, so it comes out darker than the scene is. One throwaway render pays for the whole run.
+        private static void WarmUp(Camera camera, RenderTexture target)
+        {
+            camera.targetTexture = target;
+            camera.Render();
+            camera.targetTexture = null;
         }
 
         private static void Shoot(Camera camera, Light beam, RenderTexture target, string name, bool lit)

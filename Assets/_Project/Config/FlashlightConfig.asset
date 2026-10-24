@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d15a4c3f201e68be98d7cecacbc7c52, type: 3}
   m_Name: FlashlightConfig
   m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.FlashlightConfig
-  _intensity: 3
+  _intensity: 9
   _range: 12
   _spotAngle: 45
   _innerSpotAngle: 22

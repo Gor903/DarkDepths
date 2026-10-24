@@ -6,7 +6,8 @@ namespace DarkDepths.Player
     public sealed class FlashlightConfig : ScriptableObject
     {
         [Header("Beam")]
-        [SerializeField] private float _intensity = 3f;
+        [Tooltip("Picked against the far wall of a 6 m room: at 3 it never arrived, at 9 it reads.")]
+        [SerializeField] private float _intensity = 9f;
         [Tooltip("Shorter than the fog end, or the far half of the beam is swallowed before it lands.")]
         [SerializeField] private float _range = 12f;
         [SerializeField] private float _spotAngle = 45f;
