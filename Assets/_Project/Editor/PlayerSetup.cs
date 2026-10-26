@@ -104,6 +104,11 @@ namespace DarkDepths.EditorTools
             flashlight.ApplyBeamSettings();
             flashlightGo.GetComponent<Light>().enabled = false;
 
+            var bounce = flashlightGo.AddComponent<FlashlightBounce>();
+            Wire(bounce, "_config", flashlightConfig);
+            // Everything but the player: the ray starts inside the capsule it would otherwise hit first.
+            WireInt(bounce, "_hitMask", ~(1 << LayerMask.NameToLayer("Player")));
+
             Wire(fpc, "_config", movement);
             Wire(fpc, "_input", reader);
             Wire(fpc, "_cameraPivot", pivot.transform);

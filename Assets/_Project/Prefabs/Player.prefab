@@ -199,6 +199,7 @@ GameObject:
   - component: {fileID: 5972306220220482250}
   - component: {fileID: 7774860777247154230}
   - component: {fileID: 5257364714298060252}
+  - component: {fileID: 7541264353057682848}
   m_Layer: 0
   m_Name: Flashlight
   m_TagString: Untagged
@@ -301,6 +302,22 @@ MonoBehaviour:
   _config: {fileID: 11400000, guid: 81da3663c2ccaee86be4cea2a4e734b0, type: 2}
   _input: {fileID: 2132872019784699300}
   _controller: {fileID: 0}
+--- !u!114 &7541264353057682848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6286143512067945318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63cf6e987f99b6aefbd5848180000f09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: DarkDepths.Player::DarkDepths.Player.FlashlightBounce
+  _config: {fileID: 11400000, guid: 81da3663c2ccaee86be4cea2a4e734b0, type: 2}
+  _hitMask:
+    serializedVersion: 2
+    m_Bits: 4294967039
 --- !u!1 &6950857301761425500
 GameObject:
   m_ObjectHideFlags: 0

@@ -29,6 +29,19 @@ MonoBehaviour:
   _bobAmplitude: 0.6
   _bobSpeed: 8
   _bobReferenceSpeed: 2.6
+  _bounceEnabled: 1
+  _bounceMaxDistance: 12
+  _bounceRings: 2
+  _bounceSpread: 0.85
+  _bounceGain: 0.5
+  _bounceNormalOffset: 0.6
+  _bounceRange: 5
+  _bounceColorInfluence: 0.7
+  _bounceMaxIntensity: 3
+  _bouncePositionSmoothTime: 0.08
+  _bounceIntensityRiseTime: 0.03
+  _bounceIntensityFallTime: 0.1
+  _bounceColorSmoothTime: 0.1
   _batteryCapacity: 120
   _drainPerSecond: 1
   _lowBatteryThreshold: 0.2

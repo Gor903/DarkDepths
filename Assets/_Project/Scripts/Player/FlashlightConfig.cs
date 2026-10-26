@@ -44,6 +44,32 @@ namespace DarkDepths.Player
         [Tooltip("Speed that counts as a full stride; above it the bob stops growing.")]
         [SerializeField] private float _bobReferenceSpeed = 2.6f;
 
+        [Header("Bounce")]
+        [Tooltip("Fake reflected light where the beam lands; off leaves the beam as the only source.")]
+        [SerializeField] private bool _bounceEnabled = true;
+        [Tooltip("How far down the beam a surface still counts; past this the pool stays dark.")]
+        [SerializeField] private float _bounceMaxDistance = 12f;
+        [Tooltip("Rings of rays around the beam axis; 0 leaves the pool blind to anything off-centre.")]
+        [SerializeField, Range(0, 3)] private int _bounceRings = 2;
+        [Tooltip("How far out the outer ring sits, as a share of the cone; 1 puts it on the cone edge.")]
+        [SerializeField, Range(0f, 1f)] private float _bounceSpread = 0.85f;
+        [Tooltip("Overall strength of the reflected light; start at 0.5 and tune against the far wall.")]
+        [SerializeField, Range(0f, 2f)] private float _bounceGain = 0.5f;
+        [Tooltip("How far the pool floats off the surface; bigger reads as a wider, softer glow.")]
+        [SerializeField] private float _bounceNormalOffset = 0.6f;
+        [Tooltip("Reach of the pool, kept short so far corners stay black.")]
+        [SerializeField] private float _bounceRange = 5f;
+        [Tooltip("0 keeps the torch colour, 1 takes the colour of whatever it landed on.")]
+        [SerializeField, Range(0f, 1f)] private float _bounceColorInfluence = 0.7f;
+        [Tooltip("Ceiling on the pool, so a white wall at arm's length cannot flood the room.")]
+        [SerializeField] private float _bounceMaxIntensity = 3f;
+        [SerializeField] private float _bouncePositionSmoothTime = 0.08f;
+        [Tooltip("How fast the pool brightens; short, or it arrives after the beam it belongs to.")]
+        [SerializeField] private float _bounceIntensityRiseTime = 0.03f;
+        [Tooltip("How slowly it dims once the beam leaves; longer than the rise, so nothing pops out.")]
+        [SerializeField] private float _bounceIntensityFallTime = 0.1f;
+        [SerializeField] private float _bounceColorSmoothTime = 0.1f;
+
         [Header("Battery")]
         [SerializeField] private float _batteryCapacity = 120f;
         [SerializeField] private float _drainPerSecond = 1f;
@@ -81,6 +107,12 @@ namespace DarkDepths.Player
         public float BobSpeed => _bobSpeed;
         public float BobReferenceSpeed => _bobReferenceSpeed;
 
+        public bool BounceEnabled => _bounceEnabled;
+        public float BounceMaxDistance => _bounceMaxDistance;
+        public int BounceRings => _bounceRings;
+        public float BounceSpread => _bounceSpread;
+        public float BounceRange => _bounceRange;
+
         public float BatteryCapacity => _batteryCapacity;
         public float DrainPerSecond => _drainPerSecond;
 
@@ -105,6 +137,13 @@ namespace DarkDepths.Player
         {
             return new BeamSway(_swayTime, _swayDamping, _maxSwayAngle,
                 _breathAmplitude, _breathSpeed, _bobAmplitude, _bobSpeed);
+        }
+
+        public BounceLight CreateBounce()
+        {
+            return new BounceLight(_bounceGain, _bounceNormalOffset, _bounceMaxIntensity,
+                _bounceColorInfluence, _bouncePositionSmoothTime, _bounceIntensityRiseTime,
+                _bounceIntensityFallTime, _bounceColorSmoothTime);
         }
     }
 }
